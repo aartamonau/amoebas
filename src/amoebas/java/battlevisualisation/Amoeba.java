@@ -19,7 +19,6 @@ import javax.swing.JComponent;
 public class Amoeba extends GraphicalObject {
 
 	public Amoeba(Point initialLocation) {			
-		//+ init amoeba model
 		super(initialLocation);
 		URL imgURL = getClass().getResource("amoeba.jpg");
 		img = Toolkit.getDefaultToolkit().getImage(imgURL);		
