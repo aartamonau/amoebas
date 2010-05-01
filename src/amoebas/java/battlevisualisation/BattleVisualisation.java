@@ -17,7 +17,7 @@ public class BattleVisualisation {
 	 */
 	public static void main(String[] args) {
 		
-		System.out.print("Battle Visualisation");
+		System.out.println("Battle Visualisation");
 		
 		EventQueue.invokeLater(new Runnable() {
 			

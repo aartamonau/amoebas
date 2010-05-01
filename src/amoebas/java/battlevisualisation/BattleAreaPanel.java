@@ -4,16 +4,17 @@
 package amoebas.java.battlevisualisation;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
+
+import amoebas.java.battleSimulation.BattleArea;
 
 
 /**
@@ -29,7 +30,7 @@ import javax.swing.border.EtchedBorder;
  */
 public class BattleAreaPanel extends JPanel {
 
-	public BattleAreaPanel() {	
+	public BattleAreaPanel(BattleArea battleArea) {	
 		
 		super();
 		
@@ -38,18 +39,9 @@ public class BattleAreaPanel extends JPanel {
 		setBorder(new EtchedBorder());
 		setFocusable(true);
 		
-		objects = new LinkedList<GraphicalObject>();
-		
-		addKeyListener(new KeyboardHandler());
+		this.battleArea = battleArea;
+		objects = new LinkedList<GraphicalObject>();	
 	}
-	
-	
-	public BattleAreaPanel(List<GraphicalObject> objects) {
-		
-		this();
-		this.objects = objects;
-	}
-	
 	
 	
 	public void addGraphicalObject(GraphicalObject object) {
@@ -63,17 +55,6 @@ public class BattleAreaPanel extends JPanel {
 	
 	
 	
-	public void moveObjects(int xStep, int yStep) {
-		
-		for( GraphicalObject obj : objects ) {
-			obj.setX(obj.getX() + xStep);
-			obj.setY(obj.getY() + yStep);
-		}
-		
-		repaint();
-	}
-	
-	
 	@Override
 	protected void paintComponent(Graphics graphicsContext) {
 		
@@ -81,70 +62,28 @@ public class BattleAreaPanel extends JPanel {
 		
 		Graphics2D g2d = (Graphics2D) graphicsContext;
 		
-		for( GraphicalObject object : objects ) {		
-			object.draw(this, g2d);			
+		Dimension panelSize = getSize();
+		Dimension battleAreaSize = battleArea.getSize();
+		
+		double xScale = 1.0 * panelSize.width / battleAreaSize.width;
+		double yScale = 1.0 * panelSize.height / battleAreaSize.height;
+		
+		Iterator<GraphicalObject> graphicalObjectsIter = objects.iterator();
+		
+		while( graphicalObjectsIter.hasNext() ) {
+			GraphicalObject object = graphicalObjectsIter.next();
+			
+			if( object.isValid() ){			
+				object.draw(g2d, xScale, yScale);	
+			} else {
+				graphicalObjectsIter.remove();		
+			}		
 		}
-										
+							
 	}
 	
 	
-	/**
-	 * Keyboard events' handler.
-	 * Whenever the user presses an arrow key, all the
-	 * graphical objects that are stored in the object of
-	 * the enclosing class move in the appropriate direction.
-	 * 
-	 * @author m
-	 *
-	 */
-	private class KeyboardHandler extends KeyAdapter {	
-
-		public static final int MOVE_STEP = 5;
-			
-		
-		@Override
-		public synchronized void keyPressed(KeyEvent e) {			
-			
-			int pressedKey = e.getKeyCode();
-			activeKeys.add(pressedKey);
-			
-			int xStep = 0;
-			int yStep = 0;
-			
-			if ( activeKeys.contains(KeyEvent.VK_LEFT) ) {
-				xStep = -MOVE_STEP;
-			}
-			
-			if ( activeKeys.contains(KeyEvent.VK_RIGHT) ) {
-				xStep = MOVE_STEP;
-			}
-			
-			if ( activeKeys.contains(KeyEvent.VK_DOWN) ) {
-				yStep = MOVE_STEP;
-			}
-
-			if ( activeKeys.contains(KeyEvent.VK_UP) ) {
-				yStep = -MOVE_STEP;	
-			}
-
-			moveObjects(xStep, yStep);			
-			
-			super.keyPressed(e);
-		}	
-		
-		
-		@Override
-		public synchronized void keyReleased(KeyEvent e) {
-			
-			activeKeys.remove(e.getKeyCode());
-			
-			super.keyReleased(e);
-		}
-		
-		
-		private Set<Integer> activeKeys = new HashSet<Integer>();
-	}
 	
-	
+	private BattleArea battleArea;
 	private List<GraphicalObject> objects;
 }

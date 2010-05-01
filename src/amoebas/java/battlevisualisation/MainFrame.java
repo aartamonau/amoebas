@@ -7,7 +7,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
+
 import javax.swing.JFrame;
+
+import amoebas.java.battleSimulation.Amoeba;
+import amoebas.java.battleSimulation.BattleArea;
+import amoebas.java.battleSimulation.BattleSimulation;
+import amoebas.java.battleSimulation.Wall;
 
 
 /**
@@ -52,14 +58,63 @@ public class MainFrame extends JFrame {
 		gbcStatePanel.fill = GridBagConstraints.BOTH;
 		
 		
+		
+		// Adding boundary walls
+		// let it temporarily be here
+		
+		final int WALL_THICKNESS = 10;
+		
+		Dimension size = new Dimension(1024, 700);
+		
+		Wall northWall = new Wall(new Point(0, 0), 
+				new Dimension(size.width, WALL_THICKNESS));
+		
+		Wall southWall = new Wall(new Point(0, size.height - WALL_THICKNESS), 
+				new Dimension(size.width, WALL_THICKNESS));
+		
+		Wall eastWall = new Wall(new Point(size.width - WALL_THICKNESS, 0), 
+				new Dimension(WALL_THICKNESS, size.height));
+		
+		Wall westWall = new Wall(new Point(0, 0), 
+				new Dimension(WALL_THICKNESS, size.height));
+		
+		
+		BattleArea battleArea = new BattleArea(size);
+		battleArea.addStaticObject(northWall);
+		battleArea.addStaticObject(southWall);
+		battleArea.addStaticObject(eastWall);
+		battleArea.addStaticObject(westWall);	
+		
 		StatePanel statePanel = new StatePanel();
-		BattleAreaPanel battleAreaPanel = new BattleAreaPanel();
+		BattleAreaPanel battleAreaPanel = new BattleAreaPanel(battleArea);
+		
+		battleAreaPanel.addGraphicalObject(new WallView(westWall));
+		battleAreaPanel.addGraphicalObject(new WallView(northWall));
+		battleAreaPanel.addGraphicalObject(new WallView(eastWall));
+		battleAreaPanel.addGraphicalObject(new WallView(southWall));
+			
+			
+		ObjectsManager.Init(battleArea, battleAreaPanel);
+		
+		BattleSimulation battle = new BattleSimulation(battleArea);
+		
+		Amoeba amoeba = new amoebas.java.battleSimulation.Amoeba(new Point(20, 20));
+		
+	    Amoeba amoeba1 = new amoebas.java.battleSimulation.Amoeba(new Point(600, 200));
+		
+		battle.InitBattle(amoeba, amoeba1);
+		
+		
+		battleAreaPanel.addGraphicalObject(new AmoebaView(amoeba));		
+		battleAreaPanel.addGraphicalObject(new AmoebaView(amoeba1));
+		
+
+		SimulationEngine engine = new SimulationEngine(50, battle, battleAreaPanel, null);
 		
 		add(battleAreaPanel, gbcBattleAreaPanel);
 		add(statePanel, gbcStatePanel);
 		
-		// Just for demonstration
-		battleAreaPanel.addGraphicalObject(new Amoeba(new Point(0, 0)));					
+		engine.start();		
 	}
-	
+		
 }

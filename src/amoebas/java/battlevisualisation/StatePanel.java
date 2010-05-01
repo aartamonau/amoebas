@@ -5,6 +5,7 @@ package amoebas.java.battlevisualisation;
 
 
 import java.awt.Color;
+
 import javax.swing.JPanel;
 
 
@@ -15,7 +16,7 @@ import javax.swing.JPanel;
 public class StatePanel extends JPanel {
 
 	public StatePanel() {
-		setBackground(Color.yellow);
+		setBackground(Color.GRAY);
 	}
 
 }
