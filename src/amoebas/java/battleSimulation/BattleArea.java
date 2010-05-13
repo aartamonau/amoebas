@@ -14,12 +14,14 @@ public class BattleArea {
 
 	public BattleArea(Dimension size) {
 		
-		
 		newMovableObjects = new LinkedList<MovableObject>();
 		newStaticObjects = new LinkedList<MapObject>();
 		
 		movableObjects = new ArrayList<MovableObject>();
 		staticObjects = new ArrayList<MapObject>();
+		
+		thornShotListeners = new LinkedList<ThornShotListener>();
+		
 		this.size = size;		
 	}
 	
@@ -56,7 +58,6 @@ public class BattleArea {
 	
 	public void update() {
 		
-	
 		Iterator<MovableObject> movableObjectsIter = movableObjects.iterator();
 		
 		while( movableObjectsIter.hasNext() ) {
@@ -88,6 +89,7 @@ public class BattleArea {
 	}
 	
 	
+	
 	public void flushNewItems() {
 		
 		for( MovableObject obj : newMovableObjects ) {
@@ -103,8 +105,31 @@ public class BattleArea {
 	}
 	
 	
-	public void ClearMovableObjects() {		
+	public void ClearMovableObjects() {	
+		
+		for(MovableObject obj : movableObjects ) {
+			obj.setHitPoints(0);
+		}
+		
 		movableObjects.clear();		
+	}
+	
+	
+	public void thornShot(Thorn thorn) {
+		
+		newMovableObjects.add(thorn);
+		
+		for( ThornShotListener listener : thornShotListeners ) {
+			listener.thornShot(thorn);
+		}
+	}
+	
+	public void addThornShotListener(ThornShotListener listener) {
+		thornShotListeners.add(listener);
+	}
+	
+	public void removeThornShotListener(ThornShotListener listener) {
+		thornShotListeners.remove(listener);
 	}
 	
 	
@@ -127,6 +152,11 @@ public class BattleArea {
 	}
 
 	
+	public List<MapObject> getStaticObjects() {
+		return staticObjects;
+	}
+
+
 	public Dimension getSize() {
 		return size;
 	}
@@ -135,6 +165,10 @@ public class BattleArea {
 		this.size = size;
 	}
 
+	
+	
+	private List<ThornShotListener> thornShotListeners;
+	
 
 	private Queue<MovableObject> newMovableObjects;
 	private Queue<MapObject> newStaticObjects;
@@ -142,5 +176,5 @@ public class BattleArea {
 	private List<MovableObject> movableObjects;
 	private List<MapObject> staticObjects;
 	
-	private Dimension size;
+	private Dimension size;	
 }
