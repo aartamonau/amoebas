@@ -279,13 +279,12 @@
         ;;                 (concat-map #(vector (:id %) (make-neuron %))
         ;;                             (:neurons genome)))
         outgoing-links (apply merge-with
-                              (cons concat
-                                    (map #(sorted-map (:from %) [(make-link %)])
-                                         (:links genome))))
+                              concat
+                              (map #(sorted-map (:from %) [(make-link %)])
+                                   (:links genome)))
         ingoing-links  (apply merge-with
-                              (cons concat
-                                    (map #(sorted-map (:to %) [(make-link %)])
-                                         (:links genome))))]
-    ;; neurons))
-    ;; outgoing-links))
+                              concat
+                              (map #(sorted-map (:to %) [(make-link %)])
+                                   (:links genome)))]
+
     (make-neural-net neurons ingoing-links outgoing-links)))
