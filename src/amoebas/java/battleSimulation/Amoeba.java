@@ -4,7 +4,6 @@ package amoebas.java.battleSimulation;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Random;
-import amoebas.java.battlevisualisation.ObjectsManager;
 
 
 public class Amoeba extends MovableObject {
@@ -33,13 +32,14 @@ public class Amoeba extends MovableObject {
 		velocityVector = brain.getMovementVector();			
 		move(velocityVector.x, velocityVector.y);
 		
+		
 		if(brain.shallWeShoot()) {
 			
 			Point aimVector = brain.getAimVector(velocityVector);
 			
 			Thorn thorn = new Thorn(velocityVector, getThornInitialLocation(aimVector));
 			
-			ObjectsManager.getManager().addThorn(thorn);
+			battleArea.thornShot(thorn);
 			
 			// temporary workaround
 			thorn.update(battleArea);	

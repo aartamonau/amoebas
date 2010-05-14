@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import amoebas.java.battleSimulation.BattleArea;
+import amoebas.java.battleSimulation.Thorn;
+import amoebas.java.battleSimulation.ThornShotListener;
 
 
 /**
@@ -22,13 +24,11 @@ import amoebas.java.battleSimulation.BattleArea;
  * All the objects that are to be displayed are stored in
  * "objects" list.
  *   
- * TODO: BattleAreaPanel creation process. (builder?)
- * +Init with BattleAreaModel.
  *  
  * @author m
  *
  */
-public class BattleAreaPanel extends JPanel {
+public class BattleAreaPanel extends JPanel implements ThornShotListener {
 
 	public BattleAreaPanel(BattleArea battleArea) {	
 		
@@ -51,7 +51,7 @@ public class BattleAreaPanel extends JPanel {
 	
 	public void removeGraphicalObject(GraphicalObject object) {
 		objects.remove(object);
-	}
+	}	
 	
 	
 	
@@ -82,8 +82,12 @@ public class BattleAreaPanel extends JPanel {
 							
 	}
 	
-	
+	@Override
+	public void thornShot(Thorn thorn) {
+		this.addGraphicalObject(new ThornView(thorn));
+	}
 	
 	private BattleArea battleArea;
 	private List<GraphicalObject> objects;
+	
 }

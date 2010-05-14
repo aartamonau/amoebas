@@ -28,6 +28,10 @@ public abstract class MapObject {
 		return this.boundaryRect.intersects(other.boundaryRect);		
 	}
 	
+	public void setHitPoints(int hp) {
+		this.hitPoints = hp;
+	}
+	
 	
 	public int getHitPoints() {
 		return hitPoints;
