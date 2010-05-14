@@ -59,6 +59,7 @@
 (defn find-neuron-by-id [genome id]
   (first (filter #(= (:id %) id) (:neurons genome))))
 
+;; TODO: enabled/disabled links
 (defn add-link [genome
                 mutation-rate loop-chance
                 loop-tries add-link-tries]
