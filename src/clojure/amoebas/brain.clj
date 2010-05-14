@@ -1,14 +1,14 @@
 (ns amoebas.brain
   (:use amoebas.neat.phenotype
         amoebas.utils.seq)
-  (:import (java.awt Point)))
+  (:import (java.awt.geom Point2D$Double)))
 
 (defn slice [[start end] xs]
   (take (inc (- end start))
         (drop start xs)))
 
 (defn make-point [x y]
-  (Point. x y))
+  (Point2D$Double. x y))
 
 (def movement-outputs [0 1])
 (def aim-outputs      [2 3])
