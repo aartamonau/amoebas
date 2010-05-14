@@ -12,7 +12,6 @@
   :activation-response)
 
 (defstruct neuron-state
-  :input
   :output)
 
 (defstruct neural-net
@@ -33,10 +32,9 @@
     :activation-response (:activation-response neuron-gene)))
 
 (defn make-neuron-state
-  ([] (make-neuron-state 0 0))
-  ([input output]
+  ([] (make-neuron-state 0))
+  ([output]
      (struct-map neuron-state
-       :input  input
        :output output)))
 
 (defn make-link [link-gene]
@@ -68,7 +66,9 @@
 (defn compute-neuron-input [neural-net neuron]
   (let [state      (:state neural-net)
         in-links   ((:in-links neural-net) (:id neuron))
-        in-outputs (map #(:output (state (:from %))) in-links)]
+        in-outputs (map #(* (:output (state (:from %)))
+                            (:weight %))
+                        in-links)]
     (reduce + in-outputs)))
 
 (defn compute-neuron-output [neural-net neuron]
@@ -92,11 +92,11 @@
 
         inputs-state (apply merge
                             (map #(sorted-map (:id %1)
-                                            (make-neuron-state 0 %2))
+                                            (make-neuron-state %2))
                                  neurons inputs))
         bias         (nth neurons (:inputs neural-net))
         bias-state   (sorted-map (:id bias)
-                                 (make-neuron-state 0 1))
+                                 (make-neuron-state 1))
 
         rest (drop (inc (:inputs neural-net)) neurons)
 

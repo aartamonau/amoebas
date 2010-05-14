@@ -10,8 +10,7 @@
   (let [gen (java.util.Random.)]
     (+ a (. gen nextInt (+ 1 (- b a))))))
 
-(defn random-out-of [a b]
-  (let [rand (random-int 0 1)]
-    (if (= rand 0)
-      a
-      b)))
+(defn random-out-of [& args]
+  (let [number (count args)
+        dice   (random-int 0 (dec number))]
+    (nth args dice)))
