@@ -18,6 +18,7 @@ public abstract class MapObject {
 	
 	
 	public void processCollision(MapObject other) {
+		System.out.println("collision");
 	}
 	
 	public void computeCollisionDamage(MapObject other) {

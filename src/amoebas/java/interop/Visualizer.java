@@ -16,6 +16,7 @@ import amoebas.java.battlevisualisation.AmoebaView;
 import amoebas.java.battlevisualisation.BattleAreaPanel;
 import amoebas.java.battlevisualisation.InfoDisplay;
 import amoebas.java.battlevisualisation.MainFrame;
+import amoebas.java.battlevisualisation.SimulationEngine;
 import amoebas.java.battlevisualisation.StatePanel;
 import amoebas.java.battlevisualisation.WallView;
 
@@ -31,6 +32,8 @@ public class Visualizer {
   
   private StatePanel statePanel;
   private BattleAreaPanel battleAreaPanel;
+  
+  private static final int TIMER_DELAY = 20; 
 
 
 
@@ -61,17 +64,21 @@ public class Visualizer {
 	statePanel = new StatePanel();
 	InfoDisplay.create(statePanel);
 	
+	battleArea = new BattleArea(BattleAreaDescription.size);
 	battleAreaPanel = new BattleAreaPanel(battleArea);
+	this.battleArea.addThornShotListener(battleAreaPanel);
 
 	Wall[] walls = BattleAreaDescription.createWalls();
 
     for (int i = 0; i < walls.length; i++) {
       this.battleArea.addStaticObject(walls[i]);
+      
       this.battleAreaPanel.addGraphicalObject(
     		  new WallView(walls[i]));
     }
-	
-    this.battleArea = new BattleArea(BattleAreaDescription.size);
+    
+    this.battleArea.flushNewItems();
+
     
     battleArea.addThornShotListener(battleAreaPanel);
     
@@ -97,6 +104,7 @@ public class Visualizer {
     		battleArea,
     		BattleAreaDescription.secondAmoebaPosition);
     
+    
     battleArea.ClearMovableObjects();
     
     battleAreaPanel.addGraphicalObject(
@@ -106,7 +114,13 @@ public class Visualizer {
     	new AmoebaView(bAmoeba));
     
     this.battle = new BattleSimulation(this.battleArea);
+    this.battle.InitBattle(aAmoeba, bAmoeba);
     
+    SimulationEngine engine = 
+    	new SimulationEngine(TIMER_DELAY, battle, battleAreaPanel);
     
+    engine.start();
   }
+  
+  
 }

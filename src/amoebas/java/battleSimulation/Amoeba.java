@@ -14,6 +14,7 @@ public class Amoeba extends MovableObject {
   private Random rand = new Random();
   private BattleArea battleArea; 
 
+  public static final int AMOEBA_MAX_SPEED = 3;
   public static final int AMOEBA_WIDTH = 100;
   public static final int AMOEBA_HEIGHT = 100;
   public static final int MAX_HP = 200;
@@ -39,7 +40,8 @@ public class Amoeba extends MovableObject {
     velocityVector = brain.getMovementVector();
     move(velocityVector.x, velocityVector.y);
 
-
+    System.out.println(this.getLocation());
+    
     if(brain.shallWeShoot()) {
 
       Point2D.Double aimVector = brain.getAimVector();
@@ -129,8 +131,8 @@ public class Amoeba extends MovableObject {
   @Override
   public void processCollision(MapObject other) {
 
-    velocityVector.x *= -1;
-    velocityVector.y *= -1;
+    velocityVector.x *= -1;    
+    velocityVector.y *= -1;    
 
     computeCollisionDamage(other);
   }

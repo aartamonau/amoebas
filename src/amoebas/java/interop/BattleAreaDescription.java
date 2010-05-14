@@ -24,7 +24,7 @@ class BattleAreaDescription {
                                  new Dimension(wallThickness, size.height),
                                  new Dimension(wallThickness, size.height) };
 
-  public final static Point firstAmoebaPosition = new Point(20, 20);
+  public final static Point firstAmoebaPosition = new Point(100, 100);
   public final static Point secondAmoebaPosition = new Point(600, 200);
 
   public final static

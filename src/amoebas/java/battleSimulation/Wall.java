@@ -8,6 +8,10 @@ public class Wall extends MapObject {
 	
 	public static final int DEFAULT_WEIGHT = 70;
 
+	@Override
+	public void processCollision(MapObject other) {
+		System.out.println("collision with wall");
+	}
 	
 	public Wall(Point location, Dimension size) {
 		super(null, location, size);

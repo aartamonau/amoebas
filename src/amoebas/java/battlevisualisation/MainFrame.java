@@ -33,11 +33,7 @@ public class MainFrame extends JFrame {
 		
 		setLocationRelativeTo(null);	// location in the screen center
 		
-		setBackground(Color.green);		
-				
-		InfoDisplay.instance().showGenerationNum(12);
-		InfoDisplay.instance().showPopulationFitness(1.0);
-		InfoDisplay.instance().showPopulationSize(100500);	
+		setBackground(Color.green);						
 	}
 	
 }

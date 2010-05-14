@@ -1,17 +1,17 @@
 package amoebas.java.battlevisualisation;
 
 
-import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import amoebas.java.battleSimulation.Amoeba;
 import amoebas.java.battleSimulation.BattleSimulation;
 
 
+
 public class SimulationEngine {
 	
 	public SimulationEngine(int timerDelay, BattleSimulation battle, 
-			JPanel battleArea, JPanel statsPanel) {
+			BattleAreaPanel battleArea) {
 		
 		this.battle = battle;
 		this.battleArea = battleArea;
@@ -32,7 +32,8 @@ public class SimulationEngine {
 	
 	
 	public void start() {
-		timer = new Timer(timerDelay, new SimulationTickPerformer(battle, battleArea, null, this));
+		timer = new Timer(timerDelay, 
+				new SimulationTickPerformer(battle, battleArea, this));
 		battleInProgress = true;
 		timer.start();
 	}
@@ -63,7 +64,7 @@ public class SimulationEngine {
 
 	
 	private BattleSimulation battle;
-	private JPanel battleArea;
+	private BattleAreaPanel battleArea;
 	private Timer timer;
 	private int timerDelay;
 	private boolean battleInProgress = false;

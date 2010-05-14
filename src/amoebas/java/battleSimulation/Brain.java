@@ -41,8 +41,9 @@ public class Brain implements IBrain {
       int signX = randGenerator.nextBoolean() ? -1 : 1;
       int signY = randGenerator.nextBoolean() ? -1 : 1;
 
-      movementVector = new Point2D.Double(randGenerator.nextDouble() * signX,
-                                          randGenerator.nextDouble() * signY);
+      movementVector = new Point2D.Double(
+    		  randGenerator.nextInt(Amoeba.AMOEBA_MAX_SPEED) * signX * 1.0,
+    		  randGenerator.nextInt(Amoeba.AMOEBA_MAX_SPEED) * signY * 1.0);
     }
 
     return movementVector;

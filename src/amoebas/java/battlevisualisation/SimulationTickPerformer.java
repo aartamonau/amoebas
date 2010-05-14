@@ -12,13 +12,11 @@ import amoebas.java.battleSimulation.BattleSimulation;
 public class SimulationTickPerformer implements ActionListener {
 
 	public SimulationTickPerformer(BattleSimulation battle, 
-			BattleAreaPanel battleArea, 
-			StatePanel statsPanel, 
+			BattleAreaPanel battleArea, 			
 			SimulationEngine engine) {
 		
 		this.battle = battle;
-		this.battleArea = battleArea;	
-		this.statsPanel = statsPanel;
+		this.battleArea = battleArea;			
 		this.engine = engine;
 	}
 	
@@ -36,7 +34,6 @@ public class SimulationTickPerformer implements ActionListener {
 	
 	
 	protected BattleSimulation battle;
-	protected JPanel battleArea;	
-	protected JPanel statsPanel;
+	protected JPanel battleArea;		
 	protected SimulationEngine engine;
 }
