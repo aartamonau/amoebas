@@ -66,16 +66,18 @@
         neurons (count (:neurons genome))]
     (letfn [(try-find-loop-candidate
              []
-             (loop [i loop-tries]
-               (if (== i 0)
-                 nil
-                 (let [candidate-num (random-int (inc inputs) (dec neurons))
-                       candidate (nth (:neurons genome) candidate-num)]
-                   (if (or (:recurrent? candidate)
-                           (= (:type candidate) 'bias)
-                           (= (:type candidate) 'input))
-                     (recur (dec i))
-                     candidate-num)))))
+             (if (< (random) loop-chance)
+               (loop [i loop-tries]
+                 (if (== i 0)
+                   nil
+                   (let [candidate-num (random-int (inc inputs) (dec neurons))
+                         candidate (nth (:neurons genome) candidate-num)]
+                     (if (or (:recurrent? candidate)
+                             (= (:type candidate) 'bias)
+                             (= (:type candidate) 'input))
+                       (recur (dec i))
+                       candidate-num))))
+               nil))
             (try-find-link-candidates
              []
              (loop [i add-link-tries]
@@ -113,29 +115,31 @@
                    links (conj (:links genome) link)]
                (assoc genome :links links)))]
 
-      (when (< (random) mutation-rate)
+      (if (< (random) mutation-rate)
         (let [[neuron-1-num neuron-2-num recurrent?] (try-find-candidates)]
           (if neuron-1-num
             (create-link neuron-1-num neuron-2-num recurrent?)
-            genome))))))
+            genome))
+        genome))))
 
-(defn add-neuron [genome mutation-rate old-link-tries]
+(defn add-neuron [genome mutation-rate]
   (letfn [(find-link
            []
            (loop []
-             (let [num   (random-int 0 (count (:links genome)))
+             (let [num   (random-int 0
+                                     (dec (count (:links genome))))
                    link  (nth (:links genome) num)
                    in-id (:from link)
                    in    (find-neuron-by-id genome in-id)]
                (if (and (:enabled? link)
                         (not (:recurrent? link))
                         (not (= (:type in) 'bias)))
-                 num
+                 (do num)
                  (recur)))))
           (already-have-this-neuron-id?
            [id]
            (some #(= (:id %) id) (:neurons genome)))]
-  (when (< (random) mutation-rate)
+  (if (< (random) mutation-rate)
     (let [link-num (find-link)
           link     (nth (:links genome) link-num)
           weight   (:weight link)
@@ -182,7 +186,9 @@
             link-2    (make-link-gene neuron-id (:to link) true id-link-2 weight)]
         (assoc genome
           :links (conj (:links genome) link-1 link-2)
-          :neurons (conj (:neurons genome) neuron))))))))
+          :neurons (conj (:neurons genome) neuron)))))
+
+    genome)))
 
 (defn mutate-weights [genome
                       mutation-rate
@@ -252,7 +258,7 @@
            (recur [] [] child-links child-neurons)
          (and (not-empty mlinks)
               (not-empty flinks)
-              (= (:id m) (:id f)))
+              (= (:innovation-id m) (:innovation-id f)))
            (let [[link genome]
                    (random-out-of [m mother] [f father])]
              (recur mrest frest
@@ -265,7 +271,8 @@
                  (cond
                   (empty? mlinks) [f father [] frest]  ; best is 'father
                   (empty? flinks) [m mother mrest []]  ; best is 'mother
-                  (< (:id m) (:id f)) [m mother mrest flinks]
+                  (< (:innovation-id m)
+                     (:innovation-id f)) [m mother mrest flinks]
                   :else [f father mlinks frest])]      ; (> (:id m) (:id f))
                     (recur mlinks flinks
                            (conj child-links link)

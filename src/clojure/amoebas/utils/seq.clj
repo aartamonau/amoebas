@@ -14,10 +14,11 @@
                 f
                 xs rest)))
 
-(defn partition-all
-  ([n coll]
-     (partition-all n n coll))
-  ([n step coll]
-     (lazy-seq
-      (when-let [s (seq coll)]
-        (cons (take n s) (partition-all n step (drop step s)))))))
+
+;; (defn partition-all
+;;   ([n coll]
+;;      (partition-all n n coll))
+;;   ([n step coll]
+;;      (lazy-seq
+;;       (when-let [s (seq coll)]
+;;         (cons (take n s) (partition-all n step (drop step s)))))))

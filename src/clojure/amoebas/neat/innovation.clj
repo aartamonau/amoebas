@@ -105,10 +105,11 @@
 
 (defmethod find-innovation-pure 'id
   [db in out type]
-    (some #((and (= (:neuron-in %) in)
-                 (= (:neuron-out %)  out)
-                 (= (:tag (meta %)) type)
-                 (:id %)))))
+    (some #(and (= (:neuron-in %) in)
+                (= (:neuron-out %)  out)
+                (= (:tag (meta %)) type)
+                (:id %))
+          (:innovations db)))
 
 (defn next-innovation-id-pure [db]
   (:next-innovation-num db))
