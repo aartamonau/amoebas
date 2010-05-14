@@ -14,7 +14,7 @@ import amoebas.java.battleSimulation.Amoeba;
 import amoebas.java.battleSimulation.BattleArea;
 import amoebas.java.battleSimulation.BattleSimulation;
 import amoebas.java.battleSimulation.Wall;
-import amoebas.java.battleSimulation.battle;
+// import amoebas.java.battleSimulation.battle;
 
 
 /**
