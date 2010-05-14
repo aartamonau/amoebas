@@ -10,6 +10,9 @@
 (defn make-point [x y]
   (Point2D$Double. x y))
 
+(def inputs-number 23)
+(def outputs-number 5)
+
 (def movement-outputs [0 1])
 (def aim-outputs      [2 3])
 (def shoot-output     4)
@@ -38,7 +41,8 @@
                                                        (. % y)
                                                        (. % width)
                                                        (. % height))
-                                              (seq walls))))))
+                                              (seq walls))
+                                  [(random)]))))
              (reset! reactions (outputs @nn))))
 
       (getMovementVector

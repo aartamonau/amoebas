@@ -11,6 +11,7 @@
   :population
   :next-genome-id
 
+  :leader
   :prev-generation-leader
   :fitness)
 
@@ -23,6 +24,7 @@
                      (range population-size)))
     :next-genome-id population-size
 
+    :leader nil
     :prev-generation-leader nil
     :fitness 1.0))
 
@@ -121,4 +123,6 @@
     (assoc ga
       :generation (inc (:generation ga))
       :population (concat elite children)
-      :next-genome-id next-genome-id)))
+      :next-genome-id next-genome-id
+      :leader         (first (first sorted))
+      :prev-generation-leader (:leader ga))))
