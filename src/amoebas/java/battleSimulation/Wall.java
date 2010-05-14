@@ -10,12 +10,12 @@ public class Wall extends MapObject {
 
 	
 	public Wall(Point location, Dimension size) {
-		super(location, size);
+		super(null, location, size);
 		this.weight = DEFAULT_WEIGHT;
 	}
 
 	@Override
-	public void update(BattleArea battleArea) {		
+	public void update() {		
 	}	
 	
 	

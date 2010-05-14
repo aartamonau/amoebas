@@ -3,6 +3,7 @@ package amoebas.java.interop;
 import java.awt.Dimension;
 import java.awt.Point;
 
+import amoebas.java.battleSimulation.BattleArea;
 import amoebas.java.battleSimulation.Wall;
 import amoebas.java.battleSimulation.IBrain;
 
@@ -23,8 +24,8 @@ class BattleAreaDescription {
                                  new Dimension(wallThickness, size.height),
                                  new Dimension(wallThickness, size.height) };
 
-  public final Point firstAmoebaPosition = new Point(20, 20);
-  public final Point secondAmoebaPosition = new Point(600, 200);
+  public final static Point firstAmoebaPosition = new Point(20, 20);
+  public final static Point secondAmoebaPosition = new Point(600, 200);
 
   public final static
   Wall[] createWalls() {

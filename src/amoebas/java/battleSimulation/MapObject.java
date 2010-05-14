@@ -9,11 +9,12 @@ import java.awt.geom.Rectangle2D;
 
 public abstract class MapObject {
 	
-	public MapObject(Point location, Dimension size) {		
-		this.boundaryRect = new Rectangle(location, size);		
+	public MapObject(BattleArea battleArea, Point location, Dimension size) {		
+		this.boundaryRect = new Rectangle(location, size);	
+		this.battleArea = battleArea;
 	}
 	
-	public abstract void update(BattleArea battleArea);
+	public abstract void update();
 	
 	
 	public void processCollision(MapObject other) {
@@ -50,6 +51,7 @@ public abstract class MapObject {
 	}
 		
 		
+	protected BattleArea battleArea;
 	protected Rectangle2D boundaryRect;
 	protected int hitPoints;
 	protected int weight;

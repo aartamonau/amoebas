@@ -19,6 +19,9 @@ public class BattleVisualisation {
 		
 		System.out.println("Battle Visualisation");
 		
+		// ---------------------------
+		// ---------------------------
+		
 		EventQueue.invokeLater(new Runnable() {
 			
 			@Override

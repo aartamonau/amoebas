@@ -4,6 +4,7 @@ package amoebas.java.battlevisualisation;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import amoebas.java.battleSimulation.Thorn;
@@ -35,13 +36,13 @@ public class ThornView extends GraphicalObject {
 
 		// debug
 		// Showing the direction
-		Point velocityVector = thorn.getVelocityVector();
+		Point2D.Double velocityVector = thorn.getVelocityVector();
 		
 		int squareCenterX = (int)thorn.getBoundaryRect().getCenterX();
 		int squareCenterY = (int)thorn.getBoundaryRect().getCenterY();
 
-		int endX = squareCenterX + velocityVector.x * 20;
-		int endY = squareCenterY + velocityVector.y * 20;
+		int endX = (int)(squareCenterX + velocityVector.x * 20);
+		int endY = (int)(squareCenterY + velocityVector.y * 20);
 		
 		graphicsContext.setColor(Color.RED);
 		graphicsContext.drawLine(

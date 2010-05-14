@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.geom.Point2D;
 import java.net.URL;
 import amoebas.java.battleSimulation.Amoeba;
 
@@ -47,13 +48,13 @@ public class AmoebaView extends GraphicalObject {
 				(int)(Amoeba.AMOEBA_HEIGHT * yScale), null);
 		
 		// Showing the direction
-		Point velocityVector = amoebaModel.getVelocityVector();
+		Point2D.Double velocityVector = amoebaModel.getVelocityVector();
 		
 		int squareCenterX = (int)amoebaModel.getBoundaryRect().getCenterX();
 		int squareCenterY = (int)amoebaModel.getBoundaryRect().getCenterY();
 		
-		int endX = squareCenterX + velocityVector.x * 50;
-		int endY = squareCenterY + velocityVector.y * 50;
+		int endX = (int)(squareCenterX + velocityVector.x * 50);
+		int endY = (int)(squareCenterY + velocityVector.y * 50);
 			
 		graphicsContext.setColor(Color.blue);
 		

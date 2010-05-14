@@ -2,22 +2,23 @@ package amoebas.java.battleSimulation;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 
 public abstract class MovableObject extends MapObject {
 
-  public MovableObject(Point location, Dimension size) {
-    super(location, size);
-    velocityVector = new Point();
+  public MovableObject(BattleArea battleArea, Point location, Dimension size) {
+    super(battleArea, location, size);
+    velocityVector = new Point2D.Double();
   }
 
 
-  public Point getVelocityVector() {
+  public Point2D.Double getVelocityVector() {
     return velocityVector;
   }
 
 
-  public void move(int dx, int dy) {
+  public void move(double dx, double dy) {
 
     boundaryRect.setRect(boundaryRect.getX() + dx, boundaryRect.getY() + dy,
         boundaryRect.getWidth(), boundaryRect.getHeight());
@@ -26,7 +27,7 @@ public abstract class MovableObject extends MapObject {
     velocityVector.y = dy;
   }
 
-  protected Point velocityVector;
+  protected Point2D.Double velocityVector;
 
 
 }

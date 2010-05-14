@@ -3,6 +3,7 @@ package amoebas.java.battleSimulation;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.Random;
 
 
@@ -14,20 +15,20 @@ public class Thorn extends MovableObject {
 		
 	
 	public Thorn(Point location, Dimension size) {
-		super(location, size);		
+		super(null, location, size);		
 		this.hitPoints = 1;
 		this.weight = WEIGHT;
 	}
 		
 	
-	public Thorn(Point amoebaVelocityVector, Point location) {		
+	public Thorn(Point2D.Double amoebaVelocityVector, Point location) {		
 		this(location, new Dimension(SIZE, SIZE));
 		this.velocityVector = computeVelocityVector(amoebaVelocityVector);		
 	}
 	
 	
 	@Override
-	public void update(BattleArea battleArea) {
+	public void update() {
 		move(velocityVector.x, velocityVector.y);
 	}
 
@@ -44,10 +45,10 @@ public class Thorn extends MovableObject {
 	}
 	
 	
-	private Point computeVelocityVector(Point thornDirection) {
+	private Point2D.Double computeVelocityVector(Point2D.Double thornDirection) {
 		
-		int x = Math.abs(thornDirection.x);
-		int y = Math.abs(thornDirection.y);
+		double x = Math.abs(thornDirection.x);
+		double y = Math.abs(thornDirection.y);
 			
 		// Computing the cos and sin of the angle, that the thorn's
 		// velocity vector will be rotated on
@@ -63,7 +64,7 @@ public class Thorn extends MovableObject {
 		double angleSin = Math.sqrt(1 - angleCos * angleCos);
 		
 		// Rotating the velocity vector
-		Point result = new Point(SPEED, 0);
+		Point2D.Double result = new Point2D.Double(SPEED, 0);
 		int newX = (int) Math.round(result.x * angleCos - result.y * angleSin);
 		int newY = (int) Math.round(result.x * angleSin + result.y * angleCos);
 		

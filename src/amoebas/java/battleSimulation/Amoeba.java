@@ -8,22 +8,24 @@ import java.util.Random;
 
 
 public class Amoeba extends MovableObject {
+	
   protected IBrain brain;
   private String name;
   private Random rand = new Random();
+  private BattleArea battleArea; 
 
   public static final int AMOEBA_WIDTH = 100;
   public static final int AMOEBA_HEIGHT = 100;
   public static final int MAX_HP = 200;
   public static final int WEIGHT = 50;
+  
 
+  public Amoeba(IBrain brain, BattleArea battleArea, Point location) {
 
-  public Amoeba(IBrain brain, Point location) {
-
-    super(location, new Dimension(AMOEBA_WIDTH, AMOEBA_HEIGHT));
+    super(battleArea, location, new Dimension(AMOEBA_WIDTH, AMOEBA_HEIGHT));
 
     this.brain = brain;
-
+    this.battleArea = battleArea;
     this.hitPoints = MAX_HP;
     this.weight = WEIGHT;
     this.name = Integer.toString(new Random().nextInt());
@@ -32,7 +34,7 @@ public class Amoeba extends MovableObject {
   }
 
   @Override
-  public void update(BattleArea battleArea) {
+  public void update() {
 
     velocityVector = brain.getMovementVector();
     move(velocityVector.x, velocityVector.y);
@@ -40,19 +42,19 @@ public class Amoeba extends MovableObject {
 
     if(brain.shallWeShoot()) {
 
-      Point aimVector = brain.getAimVector(velocityVector);
+      Point2D.Double aimVector = brain.getAimVector();
 
       Thorn thorn = new Thorn(velocityVector, getThornInitialLocation(aimVector));
 
       battleArea.thornShot(thorn);
 
       // temporary workaround
-      thorn.update(battleArea);
+      thorn.update();
     }
   }
 
 
-  private Point getThornInitialLocation(Point aimVector) {
+  private Point getThornInitialLocation(Point2D.Double aimVector) {
 
     double rectCenterX = boundaryRect.getCenterX();
     double rectCenterY = boundaryRect.getCenterY();

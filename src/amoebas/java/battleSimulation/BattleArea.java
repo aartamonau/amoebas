@@ -64,7 +64,7 @@ public class BattleArea {
 
       MovableObject obj = movableObjectsIter.next();
 
-      obj.update(this);
+      obj.update();
 
       if (!obj.isAlive()) {
         movableObjectsIter.remove();
@@ -77,7 +77,7 @@ public class BattleArea {
 
       MapObject obj = staticObjectsIter.next();
 
-      obj.update(this);
+      obj.update();
 
       if (!obj.isAlive()) {
         staticObjectsIter.remove();

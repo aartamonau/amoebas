@@ -27,15 +27,20 @@ public class Simulator {
     this.aBrain     = a;
     this.bBrain     = b;
 
-    this.aAmoeba    = new Amoeba(this.aBrain,
-                                 BattleAreaDescription.firstAmoebaPosition);
-    this.bAmoeba    = new Amoeba(this.bBrain,
-                                 BattleAreaDescription.secondAmoebaDescription);
+    this.aAmoeba    = new Amoeba(
+    		this.aBrain,            
+            battleArea,
+            BattleAreaDescription.firstAmoebaPosition);
+    
+    this.bAmoeba    = new Amoeba(
+    		this.bBrain,
+    		battleArea,
+    		BattleAreaDescription.secondAmoebaPosition);
 
     Wall[] walls = BattleAreaDescription.createWalls();
 
-    for (int i = 0; i < wall.length; i++) {
-      this.battleArea.addStaticObject(wall);
+    for (int i = 0; i < walls.length; i++) {
+      this.battleArea.addStaticObject(walls[i]);
     }
 
     this.battle = new BattleSimulation(this.battleArea);
