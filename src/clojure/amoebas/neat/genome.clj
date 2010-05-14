@@ -141,7 +141,8 @@
            (some #(= (:id %) id) (:neurons genome)))]
   (if (< (random) mutation-rate)
     (let [link-num (find-link)
-          link     (nth (:links genome) link-num)
+          link     (assoc (nth (:links genome) link-num)
+                     :enabled? false)
           weight   (:weight link)
           in       (find-neuron-by-id genome (:from link))
           out      (find-neuron-by-id genome (:to   link))
@@ -185,7 +186,9 @@
             link-1    (make-link-gene (:from link) neuron-id true id-link-1 1.0)
             link-2    (make-link-gene neuron-id (:to link) true id-link-2 weight)]
         (assoc genome
-          :links (conj (:links genome) link-1 link-2)
+          :links (conj (assoc (:links genome)
+                         link-num link)
+                       link-1 link-2)
           :neurons (conj (:neurons genome) neuron)))))
 
     genome)))
