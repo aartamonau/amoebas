@@ -27,9 +27,14 @@ public class Simulator {
     this.aBrain     = a;
     this.bBrain     = b;
 
-    for (int i = 0; i < BattleAreaDescription.wallsCount; i++) {
-      Wall wall = new Wall(BattleAreaDescription.wallPositions[i],
-                           BattleAreaDescription.wallDimensions[i]);
+    this.aAmoeba    = new Amoeba(this.aBrain,
+                                 BattleAreaDescription.firstAmoebaPosition);
+    this.bAmoeba    = new Amoeba(this.bBrain,
+                                 BattleAreaDescription.secondAmoebaDescription);
+
+    Wall[] walls = BattleAreaDescription.createWalls();
+
+    for (int i = 0; i < wall.length; i++) {
       this.battleArea.addStaticObject(wall);
     }
 
