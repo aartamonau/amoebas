@@ -14,6 +14,7 @@ import amoebas.java.battleSimulation.Amoeba;
 import amoebas.java.battleSimulation.BattleArea;
 import amoebas.java.battleSimulation.BattleSimulation;
 import amoebas.java.battleSimulation.Wall;
+import amoebas.java.battleSimulation.battle;
 
 
 /**
@@ -53,7 +54,7 @@ public class MainFrame extends JFrame {
 		GridBagConstraints gbcStatePanel = new GridBagConstraints();
 		gbcStatePanel.gridx = 1;
 		gbcStatePanel.gridy = 0;
-		gbcStatePanel.weightx = 0.15;
+		gbcStatePanel.weightx = 0.07;
 		gbcStatePanel.weighty = 1.0;
 		gbcStatePanel.fill = GridBagConstraints.BOTH;
 		
@@ -79,24 +80,25 @@ public class MainFrame extends JFrame {
 				new Dimension(WALL_THICKNESS, size.height));
 		
 		
-		BattleArea battleArea = new BattleArea(size);
+		final BattleArea battleArea = new BattleArea(size);
 		battleArea.addStaticObject(northWall);
 		battleArea.addStaticObject(southWall);
 		battleArea.addStaticObject(eastWall);
 		battleArea.addStaticObject(westWall);	
 		
 		StatePanel statePanel = new StatePanel();
-		BattleAreaPanel battleAreaPanel = new BattleAreaPanel(battleArea);
+		final BattleAreaPanel battleAreaPanel = new BattleAreaPanel(battleArea);
 		
 		battleAreaPanel.addGraphicalObject(new WallView(westWall));
 		battleAreaPanel.addGraphicalObject(new WallView(northWall));
 		battleAreaPanel.addGraphicalObject(new WallView(eastWall));
 		battleAreaPanel.addGraphicalObject(new WallView(southWall));
 			
-			
-		ObjectsManager.Init(battleArea, battleAreaPanel);
+
+		battleArea.addThornShotListener(battleAreaPanel);
 		
-		BattleSimulation battle = new BattleSimulation(battleArea);
+		
+		final BattleSimulation battle = new BattleSimulation(battleArea);
 		
 		Amoeba amoeba = new amoebas.java.battleSimulation.Amoeba(new Point(20, 20));
 		
@@ -109,12 +111,50 @@ public class MainFrame extends JFrame {
 		battleAreaPanel.addGraphicalObject(new AmoebaView(amoeba1));
 		
 
-		SimulationEngine engine = new SimulationEngine(50, battle, battleAreaPanel, null);
+		final SimulationEngine engine = new SimulationEngine(50, battle, battleAreaPanel, null);
 		
 		add(battleAreaPanel, gbcBattleAreaPanel);
 		add(statePanel, gbcStatePanel);
 		
 		engine.start();		
+		
+		InfoDisplay.create(statePanel);
+		InfoDisplay.instance().showGenerationNum(12);
+		InfoDisplay.instance().showBestAmoeba(amoeba1);
+		InfoDisplay.instance().showPopulationFitness(1.0);
+		InfoDisplay.instance().showPopulationSize(100500);
+		
+		Thread newTask = new Thread(new Runnable() {		
+			
+			@Override
+			public void run() {
+								
+				try {
+					
+					System.out.println("suspending");
+					Thread.sleep(5000);
+					engine.reset();
+					System.out.println("resuming");
+					Thread.sleep(5000);
+
+					Amoeba amoeba = new amoebas.java.battleSimulation.Amoeba(new Point(20, 20));								
+				    Amoeba amoeba1 = new amoebas.java.battleSimulation.Amoeba(new Point(600, 300));
+				    
+				    battleAreaPanel.addGraphicalObject(new AmoebaView(amoeba));		
+					battleAreaPanel.addGraphicalObject(new AmoebaView(amoeba1));
+					
+					battle.InitBattle(amoeba1, amoeba);				
+					engine.start();
+					
+				} catch (InterruptedException e) {			
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		
+		newTask.start();
+				
 	}
 		
 }

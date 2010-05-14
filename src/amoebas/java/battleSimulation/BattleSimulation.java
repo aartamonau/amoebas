@@ -34,6 +34,11 @@ public class BattleSimulation {
 	public Amoeba getWinner() {
 		return competitor1.isAlive()? competitor1 : competitor2;
 	}
+	
+	
+	public void reset() {
+		battleArea.ClearMovableObjects();
+	}
 			
 	
 	private Amoeba competitor1;

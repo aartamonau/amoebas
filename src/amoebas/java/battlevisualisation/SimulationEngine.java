@@ -44,6 +44,19 @@ public class SimulationEngine {
 	}
 	
 	
+	public void reset() {
+		
+		if ( timer != null ) {
+			timer.stop();
+		}
+		
+		if ( battle != null ) {
+			battle.reset();			
+		}			
+		
+	}
+	
+	
 	public boolean isBattleInProgress() {
 		return battleInProgress;
 	}
