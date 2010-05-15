@@ -2,6 +2,12 @@ package amoebas.java.battleSimulation;
 
 
 import java.awt.Dimension;
+
+import java.awt.Point;
+import java.awt.geom.Point2D;
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -165,7 +171,30 @@ public class BattleArea {
     this.size = size;
   }
 
+  public Point2D.Double normalizeVector(Point vector) {
+    Point2D.Double result =
+      new Point2D.Double(vector.x * 1.0 / this.size.width,
+                         vector.y * 1.0 / this.size.height);
 
+    return result;
+  }
+
+  public Point denormalizeVector(Point2D.Double vector) {
+    Point result = new Point((int) (vector.x * this.size.width),
+                             (int) (vector.y * this.size.height));
+
+    return result;
+  }
+
+  public Rectangle2D.Double normalizeRectangle(Rectangle rect) {
+    Rectangle2D.Double result =
+      new Rectangle2D.Double(rect.x * 1.0 / this.size.width,
+                             rect.y * 1.0 / this.size.height,
+                             rect.width * 1.0 / this.size.width,
+                             rect.height * 1.0 / this.size.height);
+
+    return result;
+  }
 
   private List<ThornShotListener> thornShotListeners;
 
