@@ -12,10 +12,13 @@
   ([from to enabled? tag weight]
      (make-link-gene from to enabled? tag weight false))
   ([from to enabled? tag weight recurrent?]
-     (struct-map link-gene
-       :from (:id from)
-       :to (:id to)
-       :enabled? enabled?
-       :innovation-id tag
-       :weight weight
-       :recurrent? recurrent?)))
+     (do (assert (and (not (nil? from))
+                      (not (nil? to))))
+
+         (struct-map link-gene
+           :from from
+           :to to
+           :enabled? enabled?
+           :innovation-id tag
+           :weight weight
+           :recurrent? recurrent?))))

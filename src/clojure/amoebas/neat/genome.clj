@@ -31,8 +31,8 @@
            (for [i (range (+ inputs 1))
                  j (range outputs)]
              (make-link-gene
-              (nth neurons i)
-              (nth neurons (+ inputs j 1))
+              (:id (nth neurons i))
+              (:id (nth neurons (+ inputs j 1)))
               true
               (+ inputs outputs (* outputs i) j 1)
               (random -1 1)))]
@@ -44,12 +44,14 @@
              :inputs-number inputs
              :outputs-number outputs))))
   ([id neurons links inputs outputs]
-     (struct-map genome
-       :id             id
-       :neurons        neurons
-       :links          links
-       :inputs-number  inputs
-       :outputs-number outputs)))
+     (do (assert (not (some nil? links)))
+         (assert (not (some nil? neurons)))
+         (struct-map genome
+           :id             id
+           :neurons        neurons
+           :links          links
+           :inputs-number  inputs
+           :outputs-number outputs))))
 
 (defn duplicate-link? [genome from to]
   (some #(and (= (:from %) (:id from))
@@ -111,10 +113,12 @@
                    neuron-2 (nth (:neurons genome) neuron-2-num)
                    id (find-or-create-innovation neuron-1 neuron-2 'link)
                    weight (random -1 1)
-                   link (make-link-gene neuron-1 neuron-2
+                   link (make-link-gene (:id neuron-1) (:id neuron-2)
                                         true id weight recurrent?)
                    links (conj (:links genome) link)]
-               (assoc genome :links links)))]
+               (do (assert (and (not (nil? neuron-1))
+                                (not (nil? neuron-2))))
+                   (assoc genome :links links))))]
 
       (if (< (random) mutation-rate)
         (let [[neuron-1-num neuron-2-num recurrent?] (try-find-candidates)]
@@ -243,9 +247,9 @@
                  child-id]
   (letfn [(neuron-from-id
            [genome id]
-           (some #(and (= (:id %) id)
-                       %)
-                 (:neurons genome)))]
+           (do (assert (not (nil? id)))
+               (some #(and (= (:id %) id) %)
+                     (:neurons genome))))]
     (let [best (best-genome mother mother-fitness father father-fitness)]
       (loop [[m & mrest :as mlinks] (:links mother)
              [f & frest :as flinks] (:links father)
