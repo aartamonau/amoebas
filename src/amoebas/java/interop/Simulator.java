@@ -27,15 +27,13 @@ public class Simulator {
     this.aBrain     = a;
     this.bBrain     = b;
 
-    this.aAmoeba    = new Amoeba(
-    		this.aBrain,            
-            battleArea,
-            BattleAreaDescription.firstAmoebaPosition);
-    
-    this.bAmoeba    = new Amoeba(
-    		this.bBrain,
-    		battleArea,
-    		BattleAreaDescription.secondAmoebaPosition);
+    this.aAmoeba    = new Amoeba(this.aBrain,
+                                 battleArea,
+                                 BattleAreaDescription.firstAmoebaPosition);
+
+    this.bAmoeba    = new Amoeba(this.bBrain,
+                                 battleArea,
+                                 BattleAreaDescription.secondAmoebaPosition);
 
     Wall[] walls = BattleAreaDescription.createWalls();
 
@@ -56,8 +54,8 @@ public class Simulator {
 
       this.battle.update();
     }
-
-    if (this.aAmoeba.equals(this.battle.getWinner() == this.aAmoeba)) {
+    System.out.println("simulation is over");
+    if (this.aAmoeba.equals(this.battle.getWinner())) {
       return SimulationResult.FIRST;
     } else {
       return SimulationResult.SECOND;

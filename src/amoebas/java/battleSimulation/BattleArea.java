@@ -186,12 +186,24 @@ public class BattleArea {
     return result;
   }
 
-  public Rectangle2D.Double normalizeRectangle(Rectangle rect) {
+  public Rectangle2D.Double normalizeRectangle(Rectangle2D rect) {
     Rectangle2D.Double result =
-      new Rectangle2D.Double(rect.x * 1.0 / this.size.width,
-                             rect.y * 1.0 / this.size.height,
-                             rect.width * 1.0 / this.size.width,
-                             rect.height * 1.0 / this.size.height);
+      new Rectangle2D.Double(rect.getX() * 1.0 / this.size.width,
+                             rect.getY() * 1.0 / this.size.height,
+                             rect.getWidth() * 1.0 / this.size.width,
+                             rect.getHeight() * 1.0 / this.size.height);
+
+    return result;
+  }
+
+  public Rectangle2D.Double[] wallPositions() {
+    Rectangle2D.Double[] result =
+      new Rectangle2D.Double[this.staticObjects.size()];
+
+    for (int i = 0; i < this.staticObjects.size(); i++) {
+      result[i] =
+        this.normalizeRectangle(this.staticObjects.get(i).getBoundaryRect());
+    }
 
     return result;
   }

@@ -1,5 +1,6 @@
 (ns amoebas.brain
-  (:use amoebas.neat.phenotype
+  (:use amoebas.neat.genome
+        amoebas.neat.phenotype
         amoebas.utils.seq
         amoebas.utils.random)
   (:import (java.awt.geom Point2D$Double)))
@@ -18,8 +19,8 @@
 (def aim-outputs      [2 3])
 (def shoot-output     4)
 
-(defn make-brain [neural-net]
-  (let [nn        (atom neural-net)
+(defn make-brain [genome]
+  (let [nn        (atom (genome-to-phenotype genome))
         reactions (atom nil)]
     (proxy [amoebas.java.battleSimulation.IBrain] []
 

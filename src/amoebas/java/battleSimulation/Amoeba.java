@@ -31,11 +31,15 @@ public class Amoeba extends MovableObject {
     this.weight = WEIGHT;
     this.name = Integer.toString(new Random().nextInt());
 
-    System.out.println("amoeba: " + name + " created. hp: " + hitPoints);
+    // System.out.println("amoeba: " + name + " created. hp: " + hitPoints);
   }
 
   @Override
   public void update() {
+    this.brain.feedSenses(this.battleArea.normalizeVector(this.getLocation()),
+                          this.battleArea.normalizeVector(this.getLocation()),
+                          null,
+                          this.battleArea.wallPositions());
 
     Point2D.Double velocityVectorNorm = this.brain.getMovementVector();
     this.velocityVector =
@@ -44,7 +48,7 @@ public class Amoeba extends MovableObject {
 
     this.move(this.velocityVector);
 
-    System.out.println(this.getLocation());
+    // System.out.println(this.getLocation());
 
     if(brain.shallWeShoot()) {
 
@@ -148,7 +152,7 @@ public class Amoeba extends MovableObject {
     int dmg = (int) ((int)other.weight * rand.nextDouble() * 0.1);
     hitPoints -= dmg;
 
-    System.out.println("Amoeba: " + name + " dmg: " + dmg + " rem: " + hitPoints);
+    // System.out.println("Amoeba: " + name + " dmg: " + dmg + " rem: " + hitPoints);
   }
 
 

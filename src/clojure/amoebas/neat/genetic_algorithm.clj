@@ -9,6 +9,7 @@
 (defstruct genetic-algorithm
   :generation
   :population
+  :simulator
   :next-genome-id
 
   :leader
@@ -16,13 +17,15 @@
   :fitness)
 
 (defn make-genetic-algorithm [population-size
-                              nn-inputs nn-outputs]
+                              nn-inputs nn-outputs
+                              simulator]
   (struct-map genetic-algorithm
     :generation 0
     :population (doall
                  (map #(make-genome % nn-inputs nn-outputs)
                      (range population-size)))
     :next-genome-id population-size
+    :simulator simulator
 
     :leader nil
     :prev-generation-leader nil
@@ -48,15 +51,18 @@
             (recur (next xs) point selected)))
         selected))))
 
-(defn simulate [a b]
+(defn simulate [ga a b]
+  ((:simulator ga) a b))
+
+(defn simulate-random [ga a b]
   (random-out-of 'a 'draw 'b))
 
 (defn genome-comparator [[genome-1 fitness-1]
                          [genome-2 fitness-2]]
   (- (compare fitness-1 fitness-2)))
 
-(defn tour [a b]
-  (let [result (simulate a b)]
+(defn tour [ga a b]
+  (let [result (simulate ga a b)]
     (cond
      (= result 'a) (hash-map a params/winner-score
                              b params/loser-score)
@@ -74,12 +80,12 @@
              (concat result
                      (map #(vector x %) rest))))))
 
-(defn tournament [times population]
+(defn tournament [ga times population]
   (let [games   (pairs population)]
     (apply merge-with +
-           (map #(apply tour %)
-                (reduce concat
-                        (replicate times games))))))
+           (pmap #(apply tour ga %)
+                 (reduce concat
+                         (replicate times games))))))
 
 (defn mutate [genome]
   (-> genome
@@ -95,7 +101,8 @@
                                   params/max-activation-perturbation)))
 
 (defn next-generation [ga]
-  (let [results (tournament params/tours-per-generation
+  (let [results (tournament ga
+                            params/tours-per-generation
                             (:population ga))
         sorted  (sort-by second
                          (comp - compare)

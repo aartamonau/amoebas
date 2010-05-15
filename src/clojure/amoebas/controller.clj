@@ -1,32 +1,18 @@
 (ns amoebas.controller
-  (:use amoebas.neat.genetic-algorithm
+  (:use [amoebas.neat.genetic-algorithm :exclude [simulate]]
         amoebas.neat.phenotype
-        amoebas.neat.genome
         amoebas.neat.innovation
         amoebas.utils.random
         amoebas.brain)
   (:import (amoebas.java.interop Visualizer)
-           (amoebas.java.battlevisualisation InfoDisplay)))
+           (amoebas.java.battlevisualisation InfoDisplay)
+           (amoebas.java.interop Simulator Simulator$SimulationResult)))
 
-(defn population-size 50)
-
-(defstruct controller
-  :visualizer
-  :info
-  :genetic-algorithm)
-
-(defn make-controller []
-  :visualizer (new Visualizer)
-  :info       (InfoDisplay/instance)
-  :genetic-algorithm (make-genetic-algorithm population-size
-                                             inputs-number
-                                             outputs-number))
-
-(defn select-random-phenotypes [ga]
+(defn select-random-amoebas [ga]
   (let [population (:population ga)
         n          (count population)
 
-        first-num  (random 0 (dec n))
+        first-num  (random-int 0 (dec n))
         second-num (loop [rnd (random-int 0 (dec n))]
                      (if (= rnd first-num)
                        (recur (random-int 0 (dec n)))
@@ -34,25 +20,39 @@
 
         first      (nth population first-num)
         second     (nth population second-num)]
-    [ (genome-to-phenotype first)
-      (genome-to-phenotype second) ]))
+    [ first
+      second ]))
 
-(defn main-loop [controller]
-  (let [visualizer (:visualizer controller)
-        info       (:info controller)]
-    (loop [ga (:genetic-algorithm controller)]
-      (do (. info showGenerationNum (:generation ga))
-          (. info showBestAmoeba    (if (nil? (:leader ga))
-                                      "not available"
-                                      (. (:id (:leader ga))
-                                         toString)))
+(def population-size 10)
 
-          (let [[a b] (select-random-phenotypes ga)
+(defn simulate [a b]
+  (let [result (doto
+                   (new Simulator (make-brain a)
+                        (make-brain b))
+                   (.simulate))]
+    (cond
+     (= result Simulator$SimulationResult/FIRST) 'a
+     (= result Simulator$SimulationResult/SECOND) 'b
+     :else 'draw)))
+
+(defn main-loop []
+  (let [visualizer (new Visualizer)
+        info       (InfoDisplay/instance)
+        ga         (agent (make-genetic-algorithm population-size
+                                                  inputs-number
+                                                  outputs-number
+                                                  simulate))]
+    (loop []
+      (do (. info showGenerationNum (:generation @ga))
+
+          (let [[a b] (select-random-amoebas @ga)
                 a-brain (make-brain a)
                 b-brain (make-brain b)]
             (. visualizer show a-brain b-brain))
 
-          (recur (next-generation ga))))))
+          (send ga next-generation)
+          (await ga)
+          (recur)))))
 
 (binding [*innovation-db* nil]
-  (main-loop (make-controller)))
+  (main-loop))
