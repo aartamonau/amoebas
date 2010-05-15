@@ -1,7 +1,7 @@
 (ns amoebas.neat.innovation
   (:use [amoebas.utils.seq :only (enumerate)]))
 
-(def *innovation-db*)
+(def global-innovation-db (atom nil))
 
 (defstruct neuron-innovation
   :id
@@ -58,7 +58,7 @@
       :next-innovation-num (+ neurons-count links-count))))
 
 (defn make-innovation-db [links neurons]
-  (set! *innovation-db* (make-innovation-db-pure links neurons)))
+  (reset! global-innovation-db (make-innovation-db-pure links neurons)))
 
 (defn dispatcher [db in out type]
   (if (and (= (:tag (meta in)) 'neuron)
@@ -92,8 +92,8 @@
 
 (defn create-innovation
   ([in out type]
-     (let [[id db] (create-innovation-pure *innovation-db* in out type)]
-       (do (set! *innovation-db* db)
+     (let [[id db] (create-innovation-pure @global-innovation-db in out type)]
+       (do (reset! global-innovation-db db)
            id))))
 
 
@@ -115,10 +115,10 @@
   (:next-innovation-num db))
 
 (defn next-innovation-id []
-  (next-innovation-id-pure *innovation-db*))
+  (next-innovation-id-pure @global-innovation-db))
 
 (defn find-innovation [in out type]
-  (find-innovation-pure *innovation-db* in out type))
+  (find-innovation-pure @global-innovation-db in out type))
 
 (defn find-or-create-innovation-pure [db in out type]
   (let [id (find-innovation-pure db in out type)]
@@ -127,18 +127,19 @@
       (create-innovation-pure db in out type))))
 
 (defn find-or-create-innovation [in out type]
-  (let [[id db] (find-or-create-innovation-pure *innovation-db* in out type)]
-    (do (set! *innovation-db* db)
+  (let [[id db] (find-or-create-innovation-pure
+                  @global-innovation-db in out type)]
+    (do (reset! global-innovation-db db)
         id)))
 
 (defn get-innovation-pure [db id]
   (nth (:innovations db) id))
 
 (defn get-innovation [id]
-  (get-innovation-pure *innovation-db*))
+  (get-innovation-pure @global-innovation-db))
 
 (defn last-neuron-id-pure [db]
   (dec (:next-neuron-id db)))
 
 (defn last-neuron-id []
-  (last-neuron-id-pure *innovation-db*))
+  (last-neuron-id-pure @global-innovation-db))

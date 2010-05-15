@@ -46,17 +46,20 @@
           (let [population (:population @ga)]
             (send ga next-generation)
 
-            (loop []
+            (loop [i 0]
+              (println i)
+              (println (agent-errors ga))
+              (println (:generation @ga))
               (let [[a b] (select-random-amoebas population)
                     a-brain (make-brain a)
                     b-brain (make-brain b)]
                 (do (. visualizer showSynchronously a-brain b-brain)
 
-                    (when-not (await-for 0 ga)
-                      (recur))))))
+                    ;; buggy
+                    (when-not (await-for 10 ga)
+                      (recur (inc i)))))))
 
           (println "****************************************************")
           (recur)))))
 
-(binding [*innovation-db* nil]
-  (main-loop))
+(main-loop)
