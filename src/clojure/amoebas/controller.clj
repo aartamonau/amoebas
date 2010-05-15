@@ -22,7 +22,7 @@
     [ first
       second ]))
 
-(def population-size 10)
+(def population-size 30)
 
 (defn simulate [a b]
   (let [result (doto
