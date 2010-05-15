@@ -28,7 +28,8 @@ public class BattleSimulation {
 
 
   public boolean isOver() {
-    return !competitor1.isAlive() || !competitor2.isAlive();
+    return this.isOverTimed() ||
+      !competitor1.isAlive() || !competitor2.isAlive();
   }
 
 
@@ -42,15 +43,8 @@ public class BattleSimulation {
   }
 
   public boolean isOverTimed() {
-    if (this.tick > TICK_LIMIT) {
-      System.out.println("over timed");
-
-      return true;
-    } else {
-      return false;
-    }
+    return this.tick > TICK_LIMIT;
   }
-
 
   private Amoeba competitor1;
   private Amoeba competitor2;

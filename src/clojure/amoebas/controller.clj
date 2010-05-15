@@ -8,9 +8,8 @@
            (amoebas.java.battlevisualisation InfoDisplay)
            (amoebas.java.interop Simulator Simulator$SimulationResult)))
 
-(defn select-random-amoebas [ga]
-  (let [population (:population ga)
-        n          (count population)
+(defn select-random-amoebas [population]
+  (let [n (count population)
 
         first-num  (random-int 0 (dec n))
         second-num (loop [rnd (random-int 0 (dec n))]
@@ -44,14 +43,19 @@
                                                   simulate))]
     (loop []
       (do (. info showGenerationNum (:generation @ga))
+          (let [population (:population @ga)]
+            (send ga next-generation)
 
-          (let [[a b] (select-random-amoebas @ga)
-                a-brain (make-brain a)
-                b-brain (make-brain b)]
-            (. visualizer show a-brain b-brain))
+            (loop []
+              (let [[a b] (select-random-amoebas population)
+                    a-brain (make-brain a)
+                    b-brain (make-brain b)]
+                (do (. visualizer showSynchronously a-brain b-brain)
 
-          (send ga next-generation)
-          (await ga)
+                    (when-not (await-for 0 ga)
+                      (recur))))))
+
+          (println "****************************************************")
           (recur)))))
 
 (binding [*innovation-db* nil]

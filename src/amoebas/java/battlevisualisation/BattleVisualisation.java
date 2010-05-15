@@ -21,7 +21,8 @@ public class BattleVisualisation {
    *
    * @param args
    */
-  public static void main(String[] args) {
+  public static void main(String[] args)
+    throws InterruptedException {
 
     // System.out.println("Battle Visualisation");
 
@@ -29,7 +30,7 @@ public class BattleVisualisation {
 
     Brain brain1 = new Brain();
     Brain brain2 = new Brain();
-    visualizer.show(brain1, brain2);
+    visualizer.showSynchronously(brain1, brain2);
 
 //    Timer timer = new Timer(10000, new ActionListener() {
 //

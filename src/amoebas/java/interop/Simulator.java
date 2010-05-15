@@ -48,12 +48,13 @@ public class Simulator {
     this.battle.InitBattle(this.aAmoeba, this.bAmoeba);
 
     while (!this.battle.isOver()) {
-      if (this.battle.isOverTimed()) {
-        return SimulationResult.DRAW;
-      }
-
       this.battle.update();
     }
+
+    if (this.battle.isOverTimed()) {
+      return SimulationResult.DRAW;
+    }
+
     System.out.println("simulation is over");
     if (this.aAmoeba.equals(this.battle.getWinner())) {
       return SimulationResult.FIRST;

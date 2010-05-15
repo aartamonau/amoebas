@@ -28,12 +28,16 @@ public class SimulationEngine {
     String winnerName = winner.getName();
     // System.out.println("Amoeba: " + winnerName + " has won!");
     // System.out.println("HP: " + winner.getHitPoints());
+
+    synchronized (this) {
+      this.notify();
+    }
   }
 
 
   public void start() {
     timer = new Timer(timerDelay,
-        new SimulationTickPerformer(battle, battleArea, this));
+                      new SimulationTickPerformer(battle, battleArea, this));
     battleInProgress = true;
     timer.start();
   }
