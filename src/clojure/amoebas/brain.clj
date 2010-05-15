@@ -1,6 +1,7 @@
 (ns amoebas.brain
   (:use amoebas.neat.phenotype
-        amoebas.utils.seq)
+        amoebas.utils.seq
+        amoebas.utils.random)
   (:import (java.awt.geom Point2D$Double)))
 
 (defn slice [[start end] xs]
