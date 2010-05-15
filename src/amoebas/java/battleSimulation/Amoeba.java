@@ -8,18 +8,18 @@ import java.util.Random;
 
 
 public class Amoeba extends MovableObject {
-	
+
   protected IBrain brain;
   private String name;
   private Random rand = new Random();
-  private BattleArea battleArea; 
+  private BattleArea battleArea;
 
   public static final int AMOEBA_MAX_SPEED = 3;
   public static final int AMOEBA_WIDTH = 100;
   public static final int AMOEBA_HEIGHT = 100;
   public static final int MAX_HP = 200;
   public static final int WEIGHT = 50;
-  
+
 
   public Amoeba(IBrain brain, BattleArea battleArea, Point location) {
 
@@ -37,11 +37,15 @@ public class Amoeba extends MovableObject {
   @Override
   public void update() {
 
-    velocityVector = brain.getMovementVector();
-    move(velocityVector.x, velocityVector.y);
+    Point2D.Double velocityVectorNorm = this.brain.getMovementVector();
+    this.velocityVector =
+      new Point((int) Math.round(velocityVectorNorm.x * AMOEBA_MAX_SPEED),
+                (int) Math.round(velocityVectorNorm.y * AMOEBA_MAX_SPEED));
+
+    this.move(this.velocityVector);
 
     System.out.println(this.getLocation());
-    
+
     if(brain.shallWeShoot()) {
 
       Point2D.Double aimVector = brain.getAimVector();
@@ -131,8 +135,8 @@ public class Amoeba extends MovableObject {
   @Override
   public void processCollision(MapObject other) {
 
-    velocityVector.x *= -1;    
-    velocityVector.y *= -1;    
+    velocityVector.x *= -1;
+    velocityVector.y *= -1;
 
     computeCollisionDamage(other);
   }
