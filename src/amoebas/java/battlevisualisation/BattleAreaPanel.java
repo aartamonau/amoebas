@@ -44,19 +44,19 @@ public class BattleAreaPanel extends JPanel implements ThornShotListener {
 	}
 	
 	
-	public void addGraphicalObject(GraphicalObject object) {
+	public synchronized void addGraphicalObject(GraphicalObject object) {
 		objects.add(object);
 	}
 	
 	
-	public void removeGraphicalObject(GraphicalObject object) {
+	public synchronized void removeGraphicalObject(GraphicalObject object) {
 		objects.remove(object);
 	}	
 	
 	
 	
 	@Override
-	protected void paintComponent(Graphics graphicsContext) {
+	protected synchronized void paintComponent(Graphics graphicsContext) {
 		
 		super.paintComponent(graphicsContext);	
 		
@@ -83,7 +83,7 @@ public class BattleAreaPanel extends JPanel implements ThornShotListener {
 	}
 	
 	@Override
-	public void thornShot(Thorn thorn) {
+	public synchronized void thornShot(Thorn thorn) {
 		this.addGraphicalObject(new ThornView(thorn));
 	}
 	
