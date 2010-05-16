@@ -43,8 +43,8 @@ public class Amoeba extends MovableObject {
 
     Point2D.Double velocityVectorNorm = this.brain.getMovementVector();
     this.velocityVector =
-      new Point((int) Math.round(velocityVectorNorm.x * AMOEBA_MAX_SPEED),
-                (int) Math.round(velocityVectorNorm.y * AMOEBA_MAX_SPEED));
+      new Point((int) Math.ceil(velocityVectorNorm.x * AMOEBA_MAX_SPEED),
+                (int) Math.ceil(velocityVectorNorm.y * AMOEBA_MAX_SPEED));
 
     this.move(this.velocityVector);
 
@@ -138,10 +138,17 @@ public class Amoeba extends MovableObject {
 
   @Override
   public void processCollision(MapObject other) {
-
-    velocityVector.x *= -1;
-    velocityVector.y *= -1;
-
+    
+    int x = (int) this.boundaryRect.getX();
+    int y = (int) this.boundaryRect.getY();
+    
+    this.boundaryRect.setRect(
+    		x - this.velocityVector.x * 2,
+    		y - this.velocityVector.y * 2,
+    		this.boundaryRect.getWidth(),
+    		this.boundaryRect.getHeight());
+    
+	  
     computeCollisionDamage(other);
   }
 
@@ -152,7 +159,7 @@ public class Amoeba extends MovableObject {
     int dmg = (int) ((int)other.weight * rand.nextDouble() * 0.1);
     hitPoints -= dmg;
 
-    // System.out.println("Amoeba: " + name + " dmg: " + dmg + " rem: " + hitPoints);
+    System.out.println("Amoeba: " + name + " dmg: " + dmg + " rem: " + hitPoints);
   }
 
 
