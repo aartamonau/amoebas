@@ -3,9 +3,7 @@ package amoebas.java.interop;
 import java.awt.Dimension;
 import java.awt.Point;
 
-import amoebas.java.battleSimulation.BattleArea;
 import amoebas.java.battleSimulation.Wall;
-import amoebas.java.battleSimulation.IBrain;
 
 class BattleAreaDescription {
   public final static Dimension size    = new Dimension(1024, 700);

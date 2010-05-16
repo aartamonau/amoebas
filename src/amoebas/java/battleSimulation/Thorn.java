@@ -3,8 +3,6 @@ package amoebas.java.battleSimulation;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.geom.Point2D;
-import java.util.Random;
 
 
 public class Thorn extends MovableObject {
@@ -28,7 +26,7 @@ public class Thorn extends MovableObject {
 
 
   @Override
-  public void update() {
+  public void update() {	
     move(velocityVector.x, velocityVector.y);
   }
 
@@ -40,7 +38,7 @@ public class Thorn extends MovableObject {
 
 
   @Override
-  public void computeCollisionDamage(MapObject other) {
+  public void computeCollisionDamage(MapObject other) {	
     hitPoints = 0;    
   }
 
@@ -52,10 +50,11 @@ public class Thorn extends MovableObject {
 
     double angleCtg = 1.0 * x / y;
 
-    int newY = (int)(1.0 * SPEED / Math.sqrt(angleCtg * angleCtg + 1 ));      
-    int newX = ( newY != 0 ) ? (int)(newY * angleCtg) : SPEED;
+    double newY = (1.0 * SPEED / Math.sqrt(angleCtg * angleCtg + 1 ));      
+    double newX = ( newY != 0 ) ? (newY * angleCtg) : SPEED;
+        
     
-    Point result = new Point(newX, newY);
+    Point result = new Point((int)Math.round(newX), (int)Math.round(newY));
 
     // Putting the vector into the same quarter
     // as thorn's direction

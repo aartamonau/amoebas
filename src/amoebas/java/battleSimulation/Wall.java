@@ -6,7 +6,7 @@ import java.awt.Point;
 
 public class Wall extends MapObject {
 
-  public static final int DEFAULT_WEIGHT = 70;
+  public static final int DEFAULT_WEIGHT = 40;
 
   @Override
   public void processCollision(MapObject other) {

@@ -1,10 +1,10 @@
 package amoebas.java.interop;
 
-import amoebas.java.battleSimulation.BattleSimulation;
-import amoebas.java.battleSimulation.BattleArea;
-import amoebas.java.battleSimulation.Wall;
-import amoebas.java.battleSimulation.IBrain;
 import amoebas.java.battleSimulation.Amoeba;
+import amoebas.java.battleSimulation.BattleArea;
+import amoebas.java.battleSimulation.BattleSimulation;
+import amoebas.java.battleSimulation.IBrain;
+import amoebas.java.battleSimulation.Wall;
 
 public class Simulator {
   private BattleArea battleArea;

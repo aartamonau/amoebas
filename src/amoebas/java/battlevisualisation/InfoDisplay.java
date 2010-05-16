@@ -1,8 +1,6 @@
 package amoebas.java.battlevisualisation;
 
 
-import amoebas.java.battleSimulation.Amoeba;
-
 
 public class InfoDisplay {
 

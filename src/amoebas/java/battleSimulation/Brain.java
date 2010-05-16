@@ -2,7 +2,6 @@ package amoebas.java.battleSimulation;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import java.util.Random;
 
 
@@ -51,8 +50,8 @@ public class Brain implements IBrain {
 
 
   public Point2D.Double getAimVector() {
-    return new Point2D.Double(randGenerator.nextDouble(),
-                              randGenerator.nextDouble());
+    return new Point2D.Double(randGenerator.nextDouble() * 100,
+                              randGenerator.nextDouble() * 100);
   }
 
 

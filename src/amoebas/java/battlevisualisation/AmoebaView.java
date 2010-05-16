@@ -9,7 +9,9 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.geom.Rectangle2D;
 import java.net.URL;
+
 import amoebas.java.battleSimulation.Amoeba;
 
 
@@ -33,8 +35,8 @@ public class AmoebaView extends GraphicalObject {
   public boolean isValid() {
     return amoebaModel.isAlive();
   }
-
-
+  
+ 
   @Override
   public void draw(Graphics2D graphicsContext, double xScale, double yScale) {
 
@@ -46,7 +48,7 @@ public class AmoebaView extends GraphicalObject {
         (int)(Amoeba.AMOEBA_WIDTH * xScale),
         (int)(Amoeba.AMOEBA_HEIGHT * yScale), null);
 
-    // Showing the direction
+    // Displaying the direction
     Point velocityVector = amoebaModel.getVelocityVector();
 
     int squareCenterX = (int)amoebaModel.getBoundaryRect().getCenterX();
@@ -62,9 +64,51 @@ public class AmoebaView extends GraphicalObject {
         (int)(squareCenterY * yScale),
         (int)(endX * xScale),
         (int)(endY * yScale));
+    
+    
+    // Displaying the aim vector
+    Point aimVector = amoebaModel.lastAimVector;
+    
+    graphicsContext.setColor(Color.green);
+
+    graphicsContext.drawLine(
+        (int)(squareCenterX  * xScale),
+        (int)(squareCenterY * yScale),
+        (int)((aimVector.x * 3 + squareCenterX) * xScale),
+        (int)((aimVector.y * 3 + squareCenterY)* yScale));
+    
+    
+    // Displaying a HP Bar
+    graphicsContext.setColor(Color.GRAY);
+    
+    Rectangle2D rect = amoebaModel.getBoundaryRect();
+    
+    int squareX = amoebaModel.getLocation().x;
+    int squareY = amoebaModel.getLocation().y;
+    
+    int height = (int)Math.round( 0.1 * rect.getHeight() );
+    int width = (int)rect.getWidth();
+    
+    
+    graphicsContext.fillRect(
+    		(int)(squareX * xScale), 
+    		(int)(squareY * yScale), 
+    		(int)(width * xScale), 
+    		(int)(height * yScale));
+    
+    graphicsContext.setColor(Color.RED);
+        
+    width *= 1.0 * amoebaModel.getHitPoints() / Amoeba.MAX_HP;
+    
+    graphicsContext.fillRect(
+    		(int)(squareX * xScale), 
+    		(int)(squareY * yScale), 
+    		(int)(width * xScale), 
+    		(int)(height * yScale));
+   
   }
 
 
   private Image img;
-    private Amoeba amoebaModel;
+  private Amoeba amoebaModel;
 }

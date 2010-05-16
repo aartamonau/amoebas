@@ -14,17 +14,18 @@ public abstract class MapObject {
     this.battleArea = battleArea;
   }
 
+  
   public abstract void update();
 
 
-  public void processCollision(MapObject other) {
-    // System.out.println("collision");
+  
+  public void processCollision(MapObject other) { 
   }
 
   public void computeCollisionDamage(MapObject other) {
   }
 
-
+  
 
   public boolean intersectsWith(MapObject other) {
     return this.boundaryRect.intersects(other.boundaryRect);
@@ -55,5 +56,5 @@ public abstract class MapObject {
   protected BattleArea battleArea;
   protected Rectangle2D boundaryRect;
   protected int hitPoints;
-  protected int weight;
+  protected int weight;  
 }
