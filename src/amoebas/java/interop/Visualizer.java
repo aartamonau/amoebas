@@ -1,16 +1,14 @@
 package amoebas.java.interop;
 
-import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
+import amoebas.java.battleSimulation.Amoeba;
 import amoebas.java.battleSimulation.BattleArea;
 import amoebas.java.battleSimulation.BattleSimulation;
 import amoebas.java.battleSimulation.IBrain;
-import amoebas.java.battleSimulation.Amoeba;
 import amoebas.java.battleSimulation.Wall;
 import amoebas.java.battlevisualisation.AmoebaView;
 import amoebas.java.battlevisualisation.BattleAreaPanel;
@@ -33,7 +31,7 @@ public class Visualizer {
   private StatePanel statePanel;
   private BattleAreaPanel battleAreaPanel;
 
-  private static final int TIMER_DELAY = 20;
+  private static final int TIMER_DELAY = 30;
 
 
 

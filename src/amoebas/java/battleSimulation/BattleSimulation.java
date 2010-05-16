@@ -3,12 +3,13 @@ package amoebas.java.battleSimulation;
 
 
 public class BattleSimulation {
-  private final int TICK_LIMIT = 500;
+	
+  private final int TICK_LIMIT = 2000;
 
+  
   public BattleSimulation(BattleArea battleArea)  {
     this.battleArea = battleArea;
   }
-
 
   public void InitBattle(Amoeba amoeba1, Amoeba amoeba2) {
 
@@ -43,6 +44,11 @@ public class BattleSimulation {
   }
 
   public boolean isOverTimed() {
+	  
+	if (this.tick > TICK_LIMIT) {
+		System.out.println("overtimed");
+	}
+	
     return this.tick > TICK_LIMIT;
   }
 

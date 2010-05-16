@@ -3,18 +3,8 @@ package amoebas.java.battlevisualisation;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Point;
 import java.awt.Toolkit;
-
 import javax.swing.JFrame;
-
-import amoebas.java.battleSimulation.Amoeba;
-import amoebas.java.battleSimulation.BattleArea;
-import amoebas.java.battleSimulation.BattleSimulation;
-import amoebas.java.battleSimulation.Wall;
-// import amoebas.java.battleSimulation.battle;
 
 
 /**

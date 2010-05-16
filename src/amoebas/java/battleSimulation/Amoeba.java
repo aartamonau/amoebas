@@ -20,7 +20,11 @@ public class Amoeba extends MovableObject {
   public static final int MAX_HP = 200;
   public static final int WEIGHT = 50;
 
-
+  
+  // For debugging only
+  public Point lastAimVector = new Point();
+  
+  
   public Amoeba(IBrain brain, BattleArea battleArea, Point location) {
 
     super(battleArea, location, new Dimension(AMOEBA_WIDTH, AMOEBA_HEIGHT));
@@ -30,37 +34,43 @@ public class Amoeba extends MovableObject {
     this.hitPoints = MAX_HP;
     this.weight = WEIGHT;
     this.name = Integer.toString(new Random().nextInt());
-
-    // System.out.println("amoeba: " + name + " created. hp: " + hitPoints);
   }
 
+  
   @Override
   public void update() {
+	  
     this.brain.feedSenses(this.battleArea.normalizeVector(this.getLocation()),
                           this.battleArea.normalizeVector(this.getLocation()),
                           null,
                           this.battleArea.wallPositions());
 
     Point2D.Double velocityVectorNorm = this.brain.getMovementVector();
+    
     this.velocityVector =
       new Point((int) Math.ceil(velocityVectorNorm.x * AMOEBA_MAX_SPEED),
                 (int) Math.ceil(velocityVectorNorm.y * AMOEBA_MAX_SPEED));
 
     this.move(this.velocityVector);
 
-    // System.out.println(this.getLocation());
-
+    
     if(brain.shallWeShoot()) {
 
       Point2D.Double aimVector = brain.getAimVector();
+      
+      lastAimVector = new Point((int)(aimVector.x), (int)(aimVector.y));
 
-      Thorn thorn = new Thorn(velocityVector, getThornInitialLocation(aimVector));
+      Thorn thorn = new Thorn(
+    		  new Point(
+    				  (int)Math.ceil(aimVector.x),
+    				  (int)Math.ceil(aimVector.y)),
+    		  getThornInitialLocation(aimVector));
 
       battleArea.thornShot(thorn);
-
-      // temporary workaround
-      thorn.update();
+    
+      thorn.update();          
     }
+    
   }
 
 
@@ -68,46 +78,43 @@ public class Amoeba extends MovableObject {
 
     double rectCenterX = boundaryRect.getCenterX();
     double rectCenterY = boundaryRect.getCenterY();
-
+    
     double intersectionX;
     double intersectionY;
 
     assert aimVector.y != 0 || aimVector.x != 0 :
       "aimVector.y != 0 || aimVector.x != 0";
-
-
+  
+    
     double aimDirectionLineTangent;
-
 
     if (aimVector.x != 0 && aimVector.y != 0) {
 
-      aimDirectionLineTangent = 1.0 *
-        Math.abs(aimVector.y) / Math.abs(aimVector.x);
+      aimDirectionLineTangent = 1.0 * Math.abs(aimVector.y / aimVector.x);
 
       // Checking intersection with rect's top line
+      
       intersectionY = boundaryRect.getHeight() / 2;
       intersectionX = intersectionY / aimDirectionLineTangent;
-
+           
       if (!boundaryRect.contains(intersectionX + rectCenterX - 1,
           intersectionY + rectCenterY - 1)) {
 
         // Checking intersection with rect's right line
         intersectionX = boundaryRect.getWidth() /2;
-        intersectionY = intersectionX * aimDirectionLineTangent;
+        intersectionY = intersectionX * aimDirectionLineTangent;                   
       }
 
     } else if ( aimVector.y == 0 ) {
-
+    
       intersectionY = 0;
-      intersectionX = boundaryRect.getWidth() / 2;
+      intersectionX = boundaryRect.getWidth() / 2;        	  
 
     } else    {
-
+    	       
       intersectionX = 0;
-      intersectionY = boundaryRect.getHeight() / 2;
-
-    }
-
+      intersectionY = boundaryRect.getHeight() / 2;               
+    }    
 
     assert boundaryRect.contains(intersectionX + rectCenterX - 1,
         intersectionY + rectCenterY - 1) : "omfg ->" + aimVector +
@@ -120,6 +127,7 @@ public class Amoeba extends MovableObject {
 
     result.x = (int) Math.ceil(intersectionX);
     result.y = (int) Math.ceil(intersectionY);
+    
 
     if ( aimVector.x < 0 ) {
       result.x *= -1;
@@ -129,9 +137,9 @@ public class Amoeba extends MovableObject {
       result.y *= -1;
     }
 
-    result.x += rectCenterX;
-    result.y += rectCenterY;
-
+    result.x += rectCenterX;    
+    result.y += rectCenterY;    
+      
     return result;
   }
 
@@ -147,8 +155,7 @@ public class Amoeba extends MovableObject {
     		y - this.velocityVector.y * 2,
     		this.boundaryRect.getWidth(),
     		this.boundaryRect.getHeight());
-    
-	  
+        
     computeCollisionDamage(other);
   }
 
@@ -157,9 +164,7 @@ public class Amoeba extends MovableObject {
   public void computeCollisionDamage(MapObject other) {
 
     int dmg = (int) ((int)other.weight * rand.nextDouble() * 0.1);
-    hitPoints -= dmg;
-
-    System.out.println("Amoeba: " + name + " dmg: " + dmg + " rem: " + hitPoints);
+    hitPoints -= dmg;  
   }
 
 

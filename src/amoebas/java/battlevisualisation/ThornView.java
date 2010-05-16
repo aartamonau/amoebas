@@ -11,10 +11,14 @@ import amoebas.java.battleSimulation.Thorn;
 
 
 public class ThornView extends GraphicalObject {
-
+	
+	
   public ThornView(Thorn thorn) {
     super(thorn.getLocation());
     this.thorn = thorn;
+    
+    Point velocity = thorn.getVelocityVector();
+    dbgSpeed = (int)Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
   }
 
 
@@ -44,11 +48,15 @@ public class ThornView extends GraphicalObject {
     int endY = squareCenterY + velocityVector.y * 20;
 
     graphicsContext.setColor(Color.RED);
+    
     graphicsContext.drawLine(
         (int)(squareCenterX  * xScale),
         (int)(squareCenterY * yScale),
         (int)(endX * xScale),
         (int)(endY * yScale));
+    
+    // Displaying thorn's speed (velocity vector length)
+    graphicsContext.drawString(Integer.toString(dbgSpeed), squareCenterX, squareCenterY);
 
   }
 
@@ -60,4 +68,5 @@ public class ThornView extends GraphicalObject {
 
 
   protected Thorn thorn;
+  private int dbgSpeed;
 }
