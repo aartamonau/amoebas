@@ -1,46 +1,44 @@
 (ns amoebas.neat.innovation
-  (:use [amoebas.utils.seq :only (enumerate)]))
+  (:use [amoebas.utils.seq :only (enumerate)])
+  (:import (amoebas.neat.link-gene link-gene)
+           (amoebas.neat.neuron-gene neuron-gene)))
 
 (def global-innovation-db (atom nil))
 
-(defstruct neuron-innovation
-  :id
-  :neuron-id
-  :neuron-in
-  :neuron-out)
+(defrecord neuron-innovation
+  [id
+   neuron-id
+   neuron-in
+   neuron-out])
 
 (defn make-neuron-innovation
   ([id neuron]
      (make-neuron-innovation id nil nil (:id neuron)))
   ([id from to neuron-id]
-     (with-meta
-       (struct-map neuron-innovation
-         :id id
-         :neuron-id neuron-id
-         :neuron-in (:id from)
-         :neuron-out (:id to))
-       {:tag 'neuron})))
+     (new neuron-innovation
+          id
+          neuron-id
+          (:id from)
+          (:id to))))
 
-(defstruct link-innovation
-  :id
-  :neuron-in
-  :neuron-out)
+(defrecord link-innovation
+  [id
+   neuron-in
+   neuron-out])
 
 (defn make-link-innovation
   ([id link]
      (make-link-innovation id (:neuron-in link) (:neuron-out link)))
   ([id in out]
-     (with-meta
-       (struct-map link-innovation
-         :id id
-         :neuron-in  in
-         :neuron-out out)
-       {:tag 'link})))
+     (new link-innovation
+          id
+          in
+          out)))
 
-(defstruct innovation-db
-  :innovations
-  :next-neuron-id
-  :next-innovation-num)
+(defrecord innovation-db
+  [innovations
+   next-neuron-id
+   next-innovation-num])
 
 (defn make-innovation-db-pure [links neurons]
   (let [neurons-count (count neurons)
@@ -51,18 +49,18 @@
         link-innovations
           (for [[i link] (enumerate links)]
             (make-link-innovation (+ i neurons-count) link))]
-    (struct-map innovation-db
-      :innovations (vec (concat neuron-innovations
+    (new innovation-db
+         (vec (concat neuron-innovations
                                 link-innovations))
-      :next-neuron-id neurons-count
-      :next-innovation-num (+ neurons-count links-count))))
+         neurons-count
+         (+ neurons-count links-count))))
 
 (defn make-innovation-db [links neurons]
   (reset! global-innovation-db (make-innovation-db-pure links neurons)))
 
 (defn dispatcher [db in out type]
-  (if (and (= (:tag (meta in)) 'neuron)
-           (= (:tag (meta out)) 'neuron))
+  (if (and (= (class in) neuron-gene)
+           (= (class out) neuron-gene))
     'wrapped
     'id))
 
@@ -105,11 +103,14 @@
 
 (defmethod find-innovation-pure 'id
   [db in out type]
+  (let [type (if (= type 'neuron)
+               neuron-gene
+               link-gene)]
     (some #(and (= (:neuron-in %) in)
                 (= (:neuron-out %)  out)
-                (= (:tag (meta %)) type)
+                (= (class %) type)
                 (:id %))
-          (:innovations db)))
+          (:innovations db))))
 
 (defn next-innovation-id-pure [db]
   (:next-innovation-num db))

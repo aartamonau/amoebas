@@ -6,30 +6,29 @@
         amoebas.utils.seq)
   (:require [amoebas.neat.parameters :as params]))
 
-(defstruct genetic-algorithm
-  :generation
-  :population
-  :simulator
-  :next-genome-id
+(defrecord genetic-algorithm
+  [generation
+   population
+   simulator
+   next-genome-id
 
-  :leader
-  :prev-generation-leader
-  :fitness)
+   leader
+   prev-generation-leader
+   fitness])
 
 (defn make-genetic-algorithm [population-size
                               nn-inputs nn-outputs
                               simulator]
-  (struct-map genetic-algorithm
-    :generation 0
-    :population (doall
-                 (map #(make-genome % nn-inputs nn-outputs)
-                     (range population-size)))
-    :next-genome-id population-size
-    :simulator simulator
+  (new genetic-algorithm
+       0
+       (map #(make-genome % nn-inputs nn-outputs)
+                     (range population-size))
+       simulator
+       population-size
 
-    :leader nil
-    :prev-generation-leader nil
-    :fitness 1.0))
+       nil
+       nil
+       1.0))
 
 (defn sus-selection [population
                      number]

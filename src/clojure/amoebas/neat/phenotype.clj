@@ -1,61 +1,65 @@
 (ns amoebas.neat.phenotype
   (:use amoebas.utils.seq))
 
-(defstruct link
-  :from
-  :to
-  :weight)
+(defrecord link
+  [from
+   to
+   weight])
 
-(defstruct neuron
-  :id
-  :type
-  :activation-response)
+(defrecord neuron
+  [id
+   type
+   activation-response])
 
-(defstruct neuron-state
-  :output)
+(defrecord neuron-state
+  [output])
 
-(defstruct neural-net
-  :neurons
-  :inputs
-  :outputs
-  :in-links                             ; a map from neuron id to the links
+(defrecord neural-net
+  [neurons
+   inputs
+   outputs
+   in-links                             ; a map from neuron id to the links
                                         ; ingoing to the corresponding neuron
-  :out-links                            ; as in-links but for outgoing links
-  :state
+                                        ; as in-links but for outgoing links
+   out-links
 
-  :outputs-ids)
+   state
+
+   outputs-ids])
 
 (defn make-neuron [neuron-gene]
-  (struct-map neuron
-    :id (:id neuron-gene)
-    :type (:type neuron-gene)
-    :activation-response (:activation-response neuron-gene)))
+  (new neuron
+       (:id neuron-gene)
+       (:type neuron-gene)
+       (:activation-response neuron-gene)))
 
 (defn make-neuron-state
   ([] (make-neuron-state 0))
   ([output]
-     (struct-map neuron-state
-       :output output)))
+     (new neuron-state output)))
 
 (defn make-link [link-gene]
-  (struct-map link
-    :from   (:from link-gene)
-    :to     (:to link-gene)
-    :weight (:weight link-gene)))
+  (new link
+       (:from   link-gene)
+       (:to     link-gene)
+       (:weight link-gene)))
 
 (defn make-neural-net [neurons in-links out-links]
   (let [inputs-count  (count (filter #(= (:type %) 'input) neurons))
         outputs       (filter #(= (:type %) 'output) neurons)
         outputs-count (count outputs)
         state         (zipmap (map :id neurons) (repeat (make-neuron-state)))]
-    (struct-map    neural-net
-      :neurons     neurons
-      :in-links    in-links
-      :out-links   out-links
-      :state       state
-      :inputs      inputs-count
-      :outputs     outputs-count
-      :outputs-ids (map :id outputs))))
+
+    (new neural-net
+         neurons
+         inputs-count
+         outputs-count
+
+         in-links
+         out-links
+
+         state
+         (map :id outputs))))
 
 (defn sigmoid [input response]
   (/ 1

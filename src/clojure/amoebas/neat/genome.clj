@@ -6,12 +6,8 @@
         amoebas.utils.random
         amoebas.utils.seq))
 
-(defstruct genome
-  :id
-  :neurons
-  :links
-  :inputs-number
-  :outputs-number)
+(defrecord genome
+  [id neurons links inputs-number outputs])
 
 (defn make-genome
   ([id inputs outputs]
@@ -37,21 +33,13 @@
               (+ inputs outputs (* outputs i) j 1)
               (random -1 1)))]
        (do (make-innovation-db links neurons)
-           (struct-map genome
-             :id id
-             :neurons neurons
-             :links links
-             :inputs-number inputs
-             :outputs-number outputs))))
+           (new genome
+                id neurons links inputs outputs))))
   ([id neurons links inputs outputs]
      (do (assert (not (some nil? links)))
          (assert (not (some nil? neurons)))
-         (struct-map genome
-           :id             id
-           :neurons        neurons
-           :links          links
-           :inputs-number  inputs
-           :outputs-number outputs))))
+         (new genome
+              id neurons links inputs outputs))))
 
 (defn duplicate-link? [genome from to]
   (some #(and (= (:from %) (:id from))
