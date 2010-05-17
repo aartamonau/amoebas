@@ -1,6 +1,5 @@
 (ns amoebas.neat.genetic-algorithm
-  (:use clojure.contrib.seq-utils
-        amoebas.neat.genome
+  (:use amoebas.neat.genome
         amoebas.utils.random
         amoebas.utils.misc
         amoebas.utils.seq)
