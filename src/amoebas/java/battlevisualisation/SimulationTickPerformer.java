@@ -7,33 +7,29 @@ import javax.swing.JPanel;
 
 import amoebas.java.battleSimulation.BattleSimulation;
 
-
-
 public class SimulationTickPerformer implements ActionListener {
 
-  public SimulationTickPerformer(BattleSimulation battle,
-      BattleAreaPanel battleArea,
-      SimulationEngine engine) {
+    public SimulationTickPerformer(BattleSimulation battle,
+            BattleAreaPanel battleArea, SimulationEngine engine) {
 
-    this.battle = battle;
-    this.battleArea = battleArea;
-    this.engine = engine;
-  }
-
-  @Override
-  public void actionPerformed(ActionEvent e) {
-
-    battle.update();
-    battleArea.repaint();
-
-    if ( battle.isOver() ) {
-      engine.BattleFinished();
+        this.battle = battle;
+        this.battleArea = battleArea;
+        this.engine = engine;
     }
 
-  }
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
+        battle.update();
+        battleArea.repaint();
 
-  protected BattleSimulation battle;
-  protected JPanel battleArea;
-  protected SimulationEngine engine;
+        if (battle.isOver()) {
+            engine.BattleFinished();
+        }
+
+    }
+
+    protected BattleSimulation battle;
+    protected JPanel battleArea;
+    protected SimulationEngine engine;
 }

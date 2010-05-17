@@ -1,59 +1,53 @@
 package amoebas.java.battleSimulation;
 
-
-
 public class BattleSimulation {
-	
-  private final int TICK_LIMIT = 2000;
 
-  
-  public BattleSimulation(BattleArea battleArea)  {
-    this.battleArea = battleArea;
-  }
+    private final int TICK_LIMIT = 2000;
 
-  public void InitBattle(Amoeba amoeba1, Amoeba amoeba2) {
+    public BattleSimulation(BattleArea battleArea) {
+        this.battleArea = battleArea;
+    }
 
-    battleArea.ClearMovableObjects();
-    tick = 0;
-    competitor1 = amoeba1;
-    competitor2 = amoeba2;
-    battleArea.addMovableObject(amoeba1);
-    battleArea.addMovableObject(amoeba2);
-  }
+    public void InitBattle(Amoeba amoeba1, Amoeba amoeba2) {
 
-  public void update() {
-    battleArea.update();
-    battleArea.processCollisions();
-    ++tick;
-  }
+        battleArea.ClearMovableObjects();
+        tick = 0;
+        competitor1 = amoeba1;
+        competitor2 = amoeba2;
+        battleArea.addMovableObject(amoeba1);
+        battleArea.addMovableObject(amoeba2);
+    }
 
+    public void update() {
+        battleArea.update();
+        battleArea.processCollisions();
+        ++tick;
+    }
 
-  public boolean isOver() {
-    return this.isOverTimed() ||
-      !competitor1.isAlive() || !competitor2.isAlive();
-  }
+    public boolean isOver() {
+        return this.isOverTimed() || !competitor1.isAlive()
+                || !competitor2.isAlive();
+    }
 
+    public Amoeba getWinner() {
+        return competitor1.isAlive() ? competitor1 : competitor2;
+    }
 
-  public Amoeba getWinner() {
-    return competitor1.isAlive()? competitor1 : competitor2;
-  }
+    public void reset() {
+        battleArea.ClearMovableObjects();
+    }
 
+    public boolean isOverTimed() {
 
-  public void reset() {
-    battleArea.ClearMovableObjects();
-  }
+        if (this.tick > TICK_LIMIT) {
+            System.out.println("overtimed");
+        }
 
-  public boolean isOverTimed() {
-	  
-	if (this.tick > TICK_LIMIT) {
-		System.out.println("overtimed");
-	}
-	
-    return this.tick > TICK_LIMIT;
-  }
+        return this.tick > TICK_LIMIT;
+    }
 
-  private Amoeba competitor1;
-  private Amoeba competitor2;
-  private long tick;
-  private BattleArea battleArea;
+    private Amoeba competitor1;
+    private Amoeba competitor2;
+    private long tick;
+    private BattleArea battleArea;
 }

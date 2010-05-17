@@ -1,6 +1,5 @@
 package amoebas.java.battlevisualisation;
 
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -8,65 +7,57 @@ import java.awt.geom.Rectangle2D;
 
 import amoebas.java.battleSimulation.Thorn;
 
-
-
 public class ThornView extends GraphicalObject {
-	
-	
-  public ThornView(Thorn thorn) {
-    super(thorn.getLocation());
-    this.thorn = thorn;
-    
-    Point velocity = thorn.getVelocityVector();
-    dbgSpeed = (int)Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-  }
 
+    public ThornView(Thorn thorn) {
+        super(thorn.getLocation());
+        this.thorn = thorn;
 
-  @Override
-  public void draw(Graphics2D graphicsContext, double xScale, double yScale) {
+        Point velocity = thorn.getVelocityVector();
+        dbgSpeed = (int) Math.sqrt(velocity.x * velocity.x + velocity.y
+                * velocity.y);
+    }
 
-    graphicsContext.setColor(Color.black);
+    @Override
+    public void draw(Graphics2D graphicsContext, double xScale, double yScale) {
 
-    Rectangle2D rect = (Rectangle2D)thorn.getBoundaryRect().clone();
+        graphicsContext.setColor(Color.black);
 
-    rect.setRect(
-        rect.getX() * xScale,
-        rect.getY() * yScale,
-        rect.getWidth() * xScale,
-        rect.getHeight() * yScale);
+        Rectangle2D rect = (Rectangle2D) thorn.getBoundaryRect().clone();
 
-    graphicsContext.fill(rect);
+        rect.setRect(rect.getX() * xScale, rect.getY() * yScale, rect
+                .getWidth()
+                * xScale, rect.getHeight() * yScale);
 
-    // debug
-    // Showing the direction
-    Point velocityVector = thorn.getVelocityVector();
+        graphicsContext.fill(rect);
 
-    int squareCenterX = (int)thorn.getBoundaryRect().getCenterX();
-    int squareCenterY = (int)thorn.getBoundaryRect().getCenterY();
+        // debug
+        // Showing the direction
+        Point velocityVector = thorn.getVelocityVector();
 
-    int endX = squareCenterX + velocityVector.x * 20;
-    int endY = squareCenterY + velocityVector.y * 20;
+        int squareCenterX = (int) thorn.getBoundaryRect().getCenterX();
+        int squareCenterY = (int) thorn.getBoundaryRect().getCenterY();
 
-    graphicsContext.setColor(Color.RED);
-    
-    graphicsContext.drawLine(
-        (int)(squareCenterX  * xScale),
-        (int)(squareCenterY * yScale),
-        (int)(endX * xScale),
-        (int)(endY * yScale));
-    
-    // Displaying thorn's speed (velocity vector length)
-    graphicsContext.drawString(Integer.toString(dbgSpeed), squareCenterX, squareCenterY);
+        int endX = squareCenterX + velocityVector.x * 20;
+        int endY = squareCenterY + velocityVector.y * 20;
 
-  }
+        graphicsContext.setColor(Color.RED);
 
+        graphicsContext.drawLine((int) (squareCenterX * xScale),
+                (int) (squareCenterY * yScale), (int) (endX * xScale),
+                (int) (endY * yScale));
 
-  @Override
-  public boolean isValid() {
-    return thorn.isAlive();
-  }
+        // Displaying thorn's speed (velocity vector length)
+        graphicsContext.drawString(Integer.toString(dbgSpeed), squareCenterX,
+                squareCenterY);
 
+    }
 
-  protected Thorn thorn;
-  private int dbgSpeed;
+    @Override
+    public boolean isValid() {
+        return thorn.isAlive();
+    }
+
+    protected Thorn thorn;
+    private int dbgSpeed;
 }

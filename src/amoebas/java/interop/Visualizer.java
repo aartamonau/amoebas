@@ -19,105 +19,95 @@ import amoebas.java.battlevisualisation.StatePanel;
 import amoebas.java.battlevisualisation.WallView;
 
 public class Visualizer {
-  private IBrain aBrain;
-  private IBrain bBrain;
+    private IBrain aBrain;
+    private IBrain bBrain;
 
-  private Amoeba aAmoeba;
-  private Amoeba bAmoeba;
+    private Amoeba aAmoeba;
+    private Amoeba bAmoeba;
 
-  private BattleArea battleArea;
-  private BattleSimulation battle;
+    private BattleArea battleArea;
+    private BattleSimulation battle;
 
-  private StatePanel statePanel;
-  private BattleAreaPanel battleAreaPanel;
+    private StatePanel statePanel;
+    private BattleAreaPanel battleAreaPanel;
 
-  private static final int TIMER_DELAY = 30;
+    private static final int TIMER_DELAY = 30;
 
+    public Visualizer() {
 
+        JFrame mainFrame = new MainFrame();
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-  public Visualizer() {
+        mainFrame.setLayout(new GridBagLayout());
 
-    JFrame mainFrame = new MainFrame();
-    mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Some magic xD
+        GridBagConstraints gbcBattleAreaPanel = new GridBagConstraints();
+        gbcBattleAreaPanel.gridx = 0;
+        gbcBattleAreaPanel.gridy = 0;
+        gbcBattleAreaPanel.weightx = 1.0;
+        gbcBattleAreaPanel.weighty = 1.0;
+        gbcBattleAreaPanel.fill = GridBagConstraints.BOTH;
 
+        GridBagConstraints gbcStatePanel = new GridBagConstraints();
+        gbcStatePanel.gridx = 1;
+        gbcStatePanel.gridy = 0;
+        gbcStatePanel.weightx = 0.07;
+        gbcStatePanel.weighty = 1.0;
+        gbcStatePanel.fill = GridBagConstraints.BOTH;
 
-    mainFrame.setLayout(new GridBagLayout());
+        statePanel = new StatePanel();
+        InfoDisplay.create(statePanel);
 
-    // Some magic xD
-    GridBagConstraints gbcBattleAreaPanel = new GridBagConstraints();
-    gbcBattleAreaPanel.gridx = 0;
-    gbcBattleAreaPanel.gridy = 0;
-    gbcBattleAreaPanel.weightx = 1.0;
-    gbcBattleAreaPanel.weighty = 1.0;
-    gbcBattleAreaPanel.fill = GridBagConstraints.BOTH;
+        battleArea = new BattleArea(BattleAreaDescription.size);
+        battleAreaPanel = new BattleAreaPanel(battleArea);
+        this.battleArea.addThornShotListener(battleAreaPanel);
 
-    GridBagConstraints gbcStatePanel = new GridBagConstraints();
-    gbcStatePanel.gridx = 1;
-    gbcStatePanel.gridy = 0;
-    gbcStatePanel.weightx = 0.07;
-    gbcStatePanel.weighty = 1.0;
-    gbcStatePanel.fill = GridBagConstraints.BOTH;
+        Wall[] walls = BattleAreaDescription.createWalls();
 
+        for (int i = 0; i < walls.length; i++) {
+            this.battleArea.addStaticObject(walls[i]);
 
-    statePanel = new StatePanel();
-    InfoDisplay.create(statePanel);
+            this.battleAreaPanel.addGraphicalObject(new WallView(walls[i]));
+        }
 
-    battleArea = new BattleArea(BattleAreaDescription.size);
-    battleAreaPanel = new BattleAreaPanel(battleArea);
-    this.battleArea.addThornShotListener(battleAreaPanel);
+        this.battleArea.flushNewItems();
 
-    Wall[] walls = BattleAreaDescription.createWalls();
+        battleArea.addThornShotListener(battleAreaPanel);
 
-    for (int i = 0; i < walls.length; i++) {
-      this.battleArea.addStaticObject(walls[i]);
+        mainFrame.add(battleAreaPanel, gbcBattleAreaPanel);
+        mainFrame.add(statePanel, gbcStatePanel);
 
-      this.battleAreaPanel.addGraphicalObject(
-        new WallView(walls[i]));
+        mainFrame.setVisible(true);
     }
 
-    this.battleArea.flushNewItems();
+    public void showSynchronously(IBrain a, IBrain b)
+            throws InterruptedException {
 
+        this.aBrain = a;
+        this.bBrain = b;
 
-    battleArea.addThornShotListener(battleAreaPanel);
+        this.aAmoeba = new Amoeba(this.aBrain, battleArea,
+                BattleAreaDescription.firstAmoebaPosition);
 
-    mainFrame.add(battleAreaPanel, gbcBattleAreaPanel);
-    mainFrame.add(statePanel, gbcStatePanel);
+        this.bAmoeba = new Amoeba(this.bBrain, battleArea,
+                BattleAreaDescription.secondAmoebaPosition);
 
-    mainFrame.setVisible(true);
-  }
+        battleArea.ClearMovableObjects();
 
+        battleAreaPanel.addGraphicalObject(new AmoebaView(aAmoeba));
 
-  public void showSynchronously(IBrain a, IBrain b)
-    throws InterruptedException {
+        battleAreaPanel.addGraphicalObject(new AmoebaView(bAmoeba));
 
-    this.aBrain = a;
-    this.bBrain = b;
+        this.battle = new BattleSimulation(this.battleArea);
+        this.battle.InitBattle(aAmoeba, bAmoeba);
 
-    this.aAmoeba = new Amoeba(this.aBrain,
-                              battleArea,
-                              BattleAreaDescription.firstAmoebaPosition);
+        SimulationEngine engine = new SimulationEngine(TIMER_DELAY, battle,
+                battleAreaPanel);
 
-    this.bAmoeba = new Amoeba(this.bBrain,
-                              battleArea,
-                              BattleAreaDescription.secondAmoebaPosition);
+        engine.start();
 
-
-    battleArea.ClearMovableObjects();
-
-    battleAreaPanel.addGraphicalObject(new AmoebaView(aAmoeba));
-
-    battleAreaPanel.addGraphicalObject(new AmoebaView(bAmoeba));
-
-    this.battle = new BattleSimulation(this.battleArea);
-    this.battle.InitBattle(aAmoeba, bAmoeba);
-
-    SimulationEngine engine =
-      new SimulationEngine(TIMER_DELAY, battle, battleAreaPanel);
-
-    engine.start();
-
-    synchronized (engine) {
-      engine.wait();
+        synchronized (engine) {
+            engine.wait();
+        }
     }
-  }
 }
