@@ -14,8 +14,9 @@ public class BattleSimulation {
         tick = 0;
         competitor1 = amoeba1;
         competitor2 = amoeba2;
-        battleArea.addMovableObject(amoeba1);
-        battleArea.addMovableObject(amoeba2);
+        battleArea.addAmoeba(amoeba1);
+        battleArea.addAmoeba(amoeba2);
+        battleArea.flushNewItems();
     }
 
     public void update() {

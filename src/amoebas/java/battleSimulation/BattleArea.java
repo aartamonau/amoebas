@@ -16,9 +16,11 @@ public class BattleArea {
 
         newMovableObjects = new LinkedList<MovableObject>();
         newStaticObjects = new LinkedList<MapObject>();
+        newAmoebas = new LinkedList<Amoeba>();
 
         movableObjects = new ArrayList<MovableObject>();
         staticObjects = new ArrayList<MapObject>();
+        amoebas = new ArrayList<Amoeba>();
 
         thornShotListeners = new LinkedList<ThornShotListener>();
 
@@ -99,9 +101,14 @@ public class BattleArea {
         for (MapObject obj : newStaticObjects) {
             staticObjects.add(obj);
         }
+        
+        for (Amoeba amoeba : newAmoebas) {
+            amoebas.add(amoeba);
+        }
 
         newMovableObjects.clear();
         newStaticObjects.clear();
+        newAmoebas.clear();
     }
 
     public void ClearMovableObjects() {
@@ -109,7 +116,8 @@ public class BattleArea {
         for (MovableObject obj : movableObjects) {
             obj.setHitPoints(0);
         }
-
+                
+        amoebas.clear();
         movableObjects.clear();
     }
 
@@ -121,7 +129,17 @@ public class BattleArea {
             listener.thornShot(thorn);
         }
     }
-
+    
+    
+    public void addAmoeba(Amoeba amoeba) {
+        newAmoebas.add(amoeba);
+        addMovableObject(amoeba);
+    }
+    
+    public List<Amoeba> getAmoebas() {
+        return this.amoebas;
+    }
+    
     public void addThornShotListener(ThornShotListener listener) {
         thornShotListeners.add(listener);
     }
@@ -194,13 +212,18 @@ public class BattleArea {
         return result;
     }
 
+    
     private List<ThornShotListener> thornShotListeners;
-
+    
+   
     private Queue<MovableObject> newMovableObjects;
     private Queue<MapObject> newStaticObjects;
+    private Queue<Amoeba> newAmoebas;
 
+    
+    private List<Amoeba> amoebas;
     private List<MovableObject> movableObjects;
-    private List<MapObject> staticObjects;
+    private List<MapObject> staticObjects;    
 
     private Dimension size;
 }

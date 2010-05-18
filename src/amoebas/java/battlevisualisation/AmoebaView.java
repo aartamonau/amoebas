@@ -12,6 +12,7 @@ import java.awt.geom.Rectangle2D;
 import java.net.URL;
 
 import amoebas.java.battleSimulation.Amoeba;
+import amoebas.java.battleSimulation.Thorn;
 
 /**
  * @author m
@@ -65,6 +66,30 @@ public class AmoebaView extends GraphicalObject {
                 (int) (squareCenterY * yScale),
                 (int) ((aimVector.x * 3 + squareCenterX) * xScale),
                 (int) ((aimVector.y * 3 + squareCenterY) * yScale));
+        
+        // Displaying the nearest enemy vector
+        Point nearestEnemyVector = amoebaModel.getNearestEnemyVector();
+
+        graphicsContext.setColor(Color.CYAN);
+
+        graphicsContext.drawLine((int) (squareCenterX * xScale),
+                (int) (squareCenterY * yScale),
+                (int) ((nearestEnemyVector.x + squareCenterX) * xScale),
+                (int) ((nearestEnemyVector.y + squareCenterY) * yScale));
+        
+        // Displaying the nearest enemy's thorn vector
+        Point nearsetThornVector = amoebaModel.getNearestThornVector();
+        
+        if ( nearsetThornVector != null ) {
+                                  
+            graphicsContext.setColor(Color.black);
+    
+            graphicsContext.drawLine((int) (loc.x * xScale),
+                    (int) (loc.y * yScale),
+                    (int) ((nearsetThornVector.x + loc.x) * xScale),
+                    (int) ((nearsetThornVector.y + loc.y) * yScale));
+        
+        }
 
         // Displaying a HP Bar
         graphicsContext.setColor(Color.GRAY);
