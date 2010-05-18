@@ -4,10 +4,35 @@
         amoebas.neat.innovation
         amoebas.neat.phenotype
         amoebas.utils.random
-        amoebas.utils.seq))
+        amoebas.utils.seq
+        amoebas.utils.force-rec
+        amoebas.utils.serialization))
 
 (defrecord genome
-  [id neurons links inputs-number outputs])
+  [id
+   neurons
+   links
+   inputs-number
+   outputs-number])
+
+(defmethod print-dup genome [o w]
+  (.write
+     w
+     (str "#=(amoebas.neat.genome.genome. "
+          (apply str
+                 (interpose " "
+                            [ (serialize (:id o))
+                              (serialize (:neurons o))
+                              (serialize (:links o))
+                              (serialize (:inputs-number o))
+                              (serialize (:outputs-nubmer o)) ]))
+          ")")))
+
+(defmethod force-rec genome
+  [x]
+  (assoc x
+    :neurons (doall (map force (:neurons x)))
+    :links   (doall (map force (:links x)))))
 
 (defn make-genome
   ([id inputs outputs]

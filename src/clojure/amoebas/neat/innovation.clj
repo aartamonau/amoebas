@@ -1,5 +1,7 @@
 (ns amoebas.neat.innovation
-  (:use [amoebas.utils.seq :only (enumerate)])
+  (:use [amoebas.utils.seq :only (enumerate)]
+        amoebas.utils.force-rec
+        amoebas.utils.serialization)
   (:import (amoebas.neat.link-gene link-gene)
            (amoebas.neat.neuron-gene neuron-gene)))
 
@@ -10,6 +12,18 @@
    neuron-id
    neuron-in
    neuron-out])
+
+(defmethod print-dup neuron-innovation [o w]
+  (.write
+     w
+     (str "#=(amoebas.neat.innovation.neuron-innovation. "
+          (apply str
+                 (interpose " "
+                        [ (serialize (:id o))
+                          (serialize (:neuron-id o))
+                          (serialize (:neuron-in o))
+                          (serialize (:neuron-out o)) ]))
+          ")")))
 
 (defn make-neuron-innovation
   ([id neuron]
@@ -26,6 +40,17 @@
    neuron-in
    neuron-out])
 
+(defmethod print-dup link-innovation [o w]
+  (.write
+     w
+     (str "#=(amoebas.neat.innovation.link-innovation. "
+          (apply str
+                 (interpose " "
+                            [ (serialize (:id o))
+                              (serialize (:neuron-in o))
+                              (serialize (:neuron-out o)) ]))
+          ")")))
+
 (defn make-link-innovation
   ([id link]
      (make-link-innovation id (:neuron-in link) (:neuron-out link)))
@@ -39,6 +64,22 @@
   [innovations
    next-neuron-id
    next-innovation-num])
+
+(defmethod print-dup innovation-db [o w]
+  (.write
+     w
+     (str "#=(amoebas.neat.innovation.innovation-db. "
+          (apply str
+                 (interpose " "
+                            [ (serialize (:innovations o))
+                              (serialize (:next-neuron-id o))
+                              (serialize (:next-innovation-num o)) ]))
+          ")")))
+
+(defmethod force-rec innovation-db
+  [x]
+  (assoc x
+    :innovations (doall (:innovations x))))
 
 (defn make-innovation-db-pure [links neurons]
   (let [neurons-count (count neurons)

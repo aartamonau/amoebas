@@ -2,27 +2,45 @@
   (:use amoebas.neat.genome
         amoebas.utils.random
         amoebas.utils.misc
-        amoebas.utils.seq)
+        amoebas.utils.seq
+        amoebas.utils.force-rec
+        amoebas.utils.serialization)
   (:require [amoebas.neat.parameters :as params]))
 
 (defrecord genetic-algorithm
   [generation
    population
-   simulator
    next-genome-id
 
    leader
    prev-generation-leader
    fitness])
 
+(defmethod print-dup genetic-algorithm [o w]
+  (.write
+     w
+     (str "#=(amoebas.neat.genetic-algorithm.genetic-algorithm. "
+          (apply str
+                 (interpose " "
+                            [ (serialize (:generation o))
+                              (serialize (:population o))
+                              (serialize (:next-genome-id o))
+                              (serialize (:leader o))
+                              (serialize (:prev-generation-leader o))
+                              (serialize (:fitness o)) ]))
+          ")")))
+
+(defmethod force-rec genetic-algorithm
+  [x]
+  (assoc x
+    :population (doall (map force (:population x)))))
+
 (defn make-genetic-algorithm [population-size
-                              nn-inputs nn-outputs
-                              simulator]
+                              nn-inputs nn-outputs]
   (new genetic-algorithm
        0
        (map #(make-genome % nn-inputs nn-outputs)
                      (range population-size))
-       simulator
        population-size
 
        nil
@@ -49,9 +67,6 @@
             (recur (next xs) point selected)))
         selected))))
 
-(defn simulate [ga a b]
-  ((:simulator ga) a b))
-
 (defn simulate-random [ga a b]
   (random-out-of 'a 'draw 'b))
 
@@ -59,8 +74,8 @@
                          [genome-2 fitness-2]]
   (- (compare fitness-1 fitness-2)))
 
-(defn tour [ga a b]
-  (let [result (simulate ga a b)]
+(defn tour [ga simulate a b]
+  (let [result (simulate a b)]
     (cond
      (= result 'a) (hash-map a params/winner-score
                              b params/loser-score)
@@ -78,10 +93,10 @@
              (concat result
                      (map #(vector x %) rest))))))
 
-(defn tournament [ga times population]
+(defn tournament [ga simulate times population]
   (let [games   (pairs population)]
     (apply merge-with +
-           (pmap #(apply tour ga %)
+           (pmap #(apply tour ga simulate %)
                  (reduce concat
                          (replicate times games))))))
 
@@ -98,8 +113,8 @@
       (mutate-activation-response params/activation-mutation-rate
                                   params/max-activation-perturbation)))
 
-(defn next-generation [ga]
-  (let [results (tournament ga
+(defn next-generation [ga simulate]
+  (let [results (tournament ga simulate
                             params/tours-per-generation
                             (:population ga))
         sorted  (sort-by second
