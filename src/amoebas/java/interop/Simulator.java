@@ -1,34 +1,25 @@
 package amoebas.java.interop;
 
+
 import amoebas.java.battleSimulation.Amoeba;
 import amoebas.java.battleSimulation.BattleArea;
 import amoebas.java.battleSimulation.BattleSimulation;
 import amoebas.java.battleSimulation.IBrain;
 import amoebas.java.battleSimulation.Wall;
 
+
+
 public class Simulator {
-    private BattleArea battleArea;
-    private BattleSimulation battle;
-
-    private IBrain aBrain;
-    private IBrain bBrain;
-
-    private Amoeba aAmoeba;
-    private Amoeba bAmoeba;
-
-    public enum SimulationResult {
-        FIRST, SECOND, DRAW
-    }
 
     public Simulator(IBrain a, IBrain b) {
         this.battleArea = new BattleArea(BattleAreaDescription.size);
         this.aBrain = a;
         this.bBrain = b;
 
-        this.aAmoeba = new Amoeba(this.aBrain, battleArea,
+        this.aAmoeba = new Amoeba(this.aBrain, this.battleArea,
                 BattleAreaDescription.firstAmoebaPosition);
 
-        this.bAmoeba = new Amoeba(this.bBrain, battleArea,
+        this.bAmoeba = new Amoeba(this.bBrain, this.battleArea,
                 BattleAreaDescription.secondAmoebaPosition);
 
         Wall[] walls = BattleAreaDescription.createWalls();
@@ -39,6 +30,7 @@ public class Simulator {
 
         this.battle = new BattleSimulation(this.battleArea);
     }
+
 
     public SimulationResult simulate() {
         this.battle.InitBattle(this.aAmoeba, this.bAmoeba);
@@ -58,4 +50,19 @@ public class Simulator {
             return SimulationResult.SECOND;
         }
     }
+
+    public enum SimulationResult {
+        DRAW, FIRST, SECOND
+    }
+
+    private Amoeba aAmoeba;
+
+    private IBrain aBrain;
+    private Amoeba bAmoeba;
+
+    private BattleSimulation battle;
+
+    private BattleArea battleArea;
+
+    private IBrain bBrain;
 }

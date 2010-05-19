@@ -1,11 +1,14 @@
 package amoebas.java.battlevisualisation;
 
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
 import amoebas.java.battleSimulation.BattleSimulation;
+
+
 
 public class SimulationTickPerformer implements ActionListener {
 
@@ -17,14 +20,15 @@ public class SimulationTickPerformer implements ActionListener {
         this.engine = engine;
     }
 
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        battle.update();
-        battleArea.repaint();
+        this.battle.update();
+        this.battleArea.repaint();
 
-        if (battle.isOver()) {
-            engine.BattleFinished();
+        if (this.battle.isOver()) {
+            this.engine.BattleFinished();
         }
 
     }

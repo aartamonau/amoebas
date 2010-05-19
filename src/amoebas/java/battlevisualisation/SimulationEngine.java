@@ -1,9 +1,12 @@
 package amoebas.java.battlevisualisation;
 
+
 import javax.swing.Timer;
 
 import amoebas.java.battleSimulation.Amoeba;
 import amoebas.java.battleSimulation.BattleSimulation;
+
+
 
 public class SimulationEngine {
 
@@ -15,12 +18,13 @@ public class SimulationEngine {
         this.timerDelay = timerDelay;
     }
 
+
     public void BattleFinished() {
-        timer.stop();
-        battleInProgress = false;
+        this.timer.stop();
+        this.battleInProgress = false;
         // System.out.println("The battle has ended!");
 
-        Amoeba winner = battle.getWinner();
+        Amoeba winner = this.battle.getWinner();
         String winnerName = winner.getName();
         // System.out.println("Amoeba: " + winnerName + " has won!");
         // System.out.println("HP: " + winner.getHitPoints());
@@ -30,37 +34,41 @@ public class SimulationEngine {
         }
     }
 
-    public void start() {
-        timer = new Timer(timerDelay, new SimulationTickPerformer(battle,
-                battleArea, this));
-        battleInProgress = true;
-        timer.start();
+
+    public boolean isBattleInProgress() {
+        return this.battleInProgress;
     }
 
-    public void stop() {
-        timer.stop();
-        battleInProgress = false;
-    }
 
     public void reset() {
 
-        if (timer != null) {
-            timer.stop();
+        if (this.timer != null) {
+            this.timer.stop();
         }
 
-        if (battle != null) {
-            battle.reset();
+        if (this.battle != null) {
+            this.battle.reset();
         }
 
     }
 
-    public boolean isBattleInProgress() {
-        return battleInProgress;
+
+    public void start() {
+        this.timer = new Timer(this.timerDelay, new SimulationTickPerformer(
+                this.battle, this.battleArea, this));
+        this.battleInProgress = true;
+        this.timer.start();
+    }
+
+
+    public void stop() {
+        this.timer.stop();
+        this.battleInProgress = false;
     }
 
     private BattleSimulation battle;
     private BattleAreaPanel battleArea;
+    private boolean battleInProgress = false;
     private Timer timer;
     private int timerDelay;
-    private boolean battleInProgress = false;
 }

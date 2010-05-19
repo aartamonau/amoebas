@@ -1,5 +1,6 @@
 package amoebas.java.battleSimulation;
 
+
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -10,49 +11,148 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+
+
 public class BattleArea {
 
     public BattleArea(Dimension size) {
 
-        newMovableObjects = new LinkedList<MovableObject>();
-        newStaticObjects = new LinkedList<MapObject>();
-        newAmoebas = new LinkedList<Amoeba>();
+        this.newMovableObjects = new LinkedList<MovableObject>();
+        this.newStaticObjects = new LinkedList<MapObject>();
+        this.newAmoebas = new LinkedList<Amoeba>();
 
-        movableObjects = new ArrayList<MovableObject>();
-        staticObjects = new ArrayList<MapObject>();
-        amoebas = new ArrayList<Amoeba>();
+        this.movableObjects = new ArrayList<MovableObject>();
+        this.staticObjects = new ArrayList<MapObject>();
+        this.amoebas = new ArrayList<Amoeba>();
 
-        thornShotListeners = new LinkedList<ThornShotListener>();
+        this.thornShotListeners = new LinkedList<ThornShotListener>();
 
         this.size = size;
     }
 
+
+    public void addAmoeba(Amoeba amoeba) {
+        this.newAmoebas.add(amoeba);
+        addMovableObject(amoeba);
+    }
+
+
+    public void addMovableObject(MovableObject obj) {
+        this.newMovableObjects.add(obj);
+    }
+
+
+    public void addStaticObject(MapObject obj) {
+        this.newStaticObjects.add(obj);
+    }
+
+
+    public void addThornShotListener(ThornShotListener listener) {
+        this.thornShotListeners.add(listener);
+    }
+
+
+    public void ClearMovableObjects() {
+
+        for (MovableObject obj : this.movableObjects) {
+            obj.setHitPoints(0);
+        }
+
+        this.amoebas.clear();
+        this.movableObjects.clear();
+    }
+
+
+    public Point denormalizeVector(Point2D.Double vector) {
+        Point result = new Point((int) (vector.x * this.size.width),
+                (int) (vector.y * this.size.height));
+
+        return result;
+    }
+
+
+    public void flushNewItems() {
+
+        for (MovableObject obj : this.newMovableObjects) {
+            this.movableObjects.add(obj);
+        }
+
+        for (MapObject obj : this.newStaticObjects) {
+            this.staticObjects.add(obj);
+        }
+
+        for (Amoeba amoeba : this.newAmoebas) {
+            this.amoebas.add(amoeba);
+        }
+
+        this.newMovableObjects.clear();
+        this.newStaticObjects.clear();
+        this.newAmoebas.clear();
+    }
+
+
+    public List<Amoeba> getAmoebas() {
+        return this.amoebas;
+    }
+
+
+    public Dimension getSize() {
+        return this.size;
+    }
+
+
+    public List<MapObject> getStaticObjects() {
+        return this.staticObjects;
+    }
+
+
+    public Rectangle2D.Double normalizeRectangle(Rectangle2D rect) {
+        Rectangle2D.Double result = new Rectangle2D.Double(rect.getX() * 1.0
+                / this.size.width, rect.getY() * 1.0 / this.size.height, rect
+                .getWidth()
+                * 1.0 / this.size.width, rect.getHeight() * 1.0
+                / this.size.height);
+
+        return result;
+    }
+
+
+    public Point2D.Double normalizeVector(Point vector) {
+        Point2D.Double result = new Point2D.Double(vector.x * 1.0
+                / this.size.width, vector.y * 1.0 / this.size.height);
+
+        return result;
+    }
+
+
     public void processCollisions() {
 
-        int movableObjectsNum = movableObjects.size();
-        int staticObjectsNum = staticObjects.size();
+        int movableObjectsNum = this.movableObjects.size();
+        int staticObjectsNum = this.staticObjects.size();
 
         for (int i = 0; i < movableObjectsNum; ++i) {
 
             for (int j = i + 1; j < movableObjectsNum; ++j) {
 
-                if (movableObjects.get(i).intersectsWith(movableObjects.get(j))) {
+                if (this.movableObjects.get(i).intersectsWith(
+                        this.movableObjects.get(j))) {
 
-                    movableObjects.get(i).processCollision(
-                            movableObjects.get(j));
-                    movableObjects.get(j).processCollision(
-                            movableObjects.get(i));
+                    this.movableObjects.get(i).processCollision(
+                            this.movableObjects.get(j));
+                    this.movableObjects.get(j).processCollision(
+                            this.movableObjects.get(i));
                 }
             }
 
             for (int j = 0; j < staticObjectsNum; ++j) {
 
-                if (movableObjects.get(i).intersectsWith(staticObjects.get(j))) {
+                if (this.movableObjects.get(i).intersectsWith(
+                        this.staticObjects.get(j))) {
 
-                    movableObjects.get(i)
-                            .processCollision(staticObjects.get(j));
-                    staticObjects.get(j)
-                            .processCollision(movableObjects.get(i));
+                    this.movableObjects.get(i).processCollision(
+                            this.staticObjects.get(j));
+                    this.staticObjects.get(j).processCollision(
+                            this.movableObjects.get(i));
                 }
             }
 
@@ -60,9 +160,41 @@ public class BattleArea {
 
     }
 
+
+    public void removeThornShotListener(ThornShotListener listener) {
+        this.thornShotListeners.remove(listener);
+    }
+
+
+    public void setMovableObjects(List<MovableObject> movableObjects) {
+        this.movableObjects = movableObjects;
+    }
+
+
+    public void setSize(Dimension size) {
+        this.size = size;
+    }
+
+
+    public void setStaticObjects(List<MapObject> staticObjects) {
+        this.staticObjects = staticObjects;
+    }
+
+
+    public void thornShot(Thorn thorn) {
+
+        this.newMovableObjects.add(thorn);
+
+        for (ThornShotListener listener : this.thornShotListeners) {
+            listener.thornShot(thorn);
+        }
+    }
+
+
     public void update() {
 
-        Iterator<MovableObject> movableObjectsIter = movableObjects.iterator();
+        Iterator<MovableObject> movableObjectsIter = this.movableObjects
+                .iterator();
 
         while (movableObjectsIter.hasNext()) {
 
@@ -75,7 +207,7 @@ public class BattleArea {
             }
         }
 
-        Iterator<MapObject> staticObjectsIter = staticObjects.iterator();
+        Iterator<MapObject> staticObjectsIter = this.staticObjects.iterator();
 
         while (staticObjectsIter.hasNext()) {
 
@@ -92,113 +224,6 @@ public class BattleArea {
 
     }
 
-    public void flushNewItems() {
-
-        for (MovableObject obj : newMovableObjects) {
-            movableObjects.add(obj);
-        }
-
-        for (MapObject obj : newStaticObjects) {
-            staticObjects.add(obj);
-        }
-        
-        for (Amoeba amoeba : newAmoebas) {
-            amoebas.add(amoeba);
-        }
-
-        newMovableObjects.clear();
-        newStaticObjects.clear();
-        newAmoebas.clear();
-    }
-
-    public void ClearMovableObjects() {
-
-        for (MovableObject obj : movableObjects) {
-            obj.setHitPoints(0);
-        }
-                
-        amoebas.clear();
-        movableObjects.clear();
-    }
-
-    public void thornShot(Thorn thorn) {
-
-        newMovableObjects.add(thorn);
-
-        for (ThornShotListener listener : thornShotListeners) {
-            listener.thornShot(thorn);
-        }
-    }
-    
-    
-    public void addAmoeba(Amoeba amoeba) {
-        newAmoebas.add(amoeba);
-        addMovableObject(amoeba);
-    }
-    
-    public List<Amoeba> getAmoebas() {
-        return this.amoebas;
-    }
-    
-    public void addThornShotListener(ThornShotListener listener) {
-        thornShotListeners.add(listener);
-    }
-
-    public void removeThornShotListener(ThornShotListener listener) {
-        thornShotListeners.remove(listener);
-    }
-
-    public void addMovableObject(MovableObject obj) {
-        newMovableObjects.add(obj);
-    }
-
-    public void addStaticObject(MapObject obj) {
-        newStaticObjects.add(obj);
-    }
-
-    public void setMovableObjects(List<MovableObject> movableObjects) {
-        this.movableObjects = movableObjects;
-    }
-
-    public void setStaticObjects(List<MapObject> staticObjects) {
-        this.staticObjects = staticObjects;
-    }
-
-    public List<MapObject> getStaticObjects() {
-        return staticObjects;
-    }
-
-    public Dimension getSize() {
-        return size;
-    }
-
-    public void setSize(Dimension size) {
-        this.size = size;
-    }
-
-    public Point2D.Double normalizeVector(Point vector) {
-        Point2D.Double result = new Point2D.Double(vector.x * 1.0
-                / this.size.width, vector.y * 1.0 / this.size.height);
-
-        return result;
-    }
-
-    public Point denormalizeVector(Point2D.Double vector) {
-        Point result = new Point((int) (vector.x * this.size.width),
-                (int) (vector.y * this.size.height));
-
-        return result;
-    }
-
-    public Rectangle2D.Double normalizeRectangle(Rectangle2D rect) {
-        Rectangle2D.Double result = new Rectangle2D.Double(rect.getX() * 1.0
-                / this.size.width, rect.getY() * 1.0 / this.size.height, rect
-                .getWidth()
-                * 1.0 / this.size.width, rect.getHeight() * 1.0
-                / this.size.height);
-
-        return result;
-    }
 
     public Rectangle2D.Double[] wallPositions() {
         Rectangle2D.Double[] result = new Rectangle2D.Double[this.staticObjects
@@ -212,18 +237,15 @@ public class BattleArea {
         return result;
     }
 
-    
-    private List<ThornShotListener> thornShotListeners;
-    
-   
-    private Queue<MovableObject> newMovableObjects;
-    private Queue<MapObject> newStaticObjects;
-    private Queue<Amoeba> newAmoebas;
-
-    
     private List<Amoeba> amoebas;
-    private List<MovableObject> movableObjects;
-    private List<MapObject> staticObjects;    
 
+    private List<MovableObject> movableObjects;
+    private Queue<Amoeba> newAmoebas;
+    private Queue<MovableObject> newMovableObjects;
+
+    private Queue<MapObject> newStaticObjects;
     private Dimension size;
+    private List<MapObject> staticObjects;
+
+    private List<ThornShotListener> thornShotListeners;
 }

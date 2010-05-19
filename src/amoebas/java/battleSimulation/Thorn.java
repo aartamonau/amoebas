@@ -1,15 +1,17 @@
 package amoebas.java.battleSimulation;
 
+
 import java.awt.Dimension;
 import java.awt.Point;
 
+
+
 public class Thorn extends MovableObject {
 
-    public static final int SPEED = 8;
     public static final int SIZE = 5;
+    public static final int SPEED = 8;
     public static final int WEIGHT = 500;
 
-    private Amoeba shooter;
 
     public Thorn(Amoeba shooter, Point location, Dimension size) {
         super(null, location, size);
@@ -19,26 +21,31 @@ public class Thorn extends MovableObject {
         this.shooter.setReadyForShooting(false);
     }
 
+
     public Thorn(Amoeba shooter, Point amoebaVelocityVector, Point location) {
         this(shooter, location, new Dimension(SIZE, SIZE));
         this.velocityVector = computeVelocityVector(amoebaVelocityVector);
     }
 
+
     @Override
-    public void update() {
-        move(velocityVector.x, velocityVector.y);
+    public void computeCollisionDamage(MapObject other) {
+        this.hitPoints = 0;
+        this.shooter.setReadyForShooting(true);
     }
+
 
     @Override
     public void processCollision(MapObject other) {
         computeCollisionDamage(other);
     }
 
+
     @Override
-    public void computeCollisionDamage(MapObject other) {
-        hitPoints = 0;
-        this.shooter.setReadyForShooting(true);
+    public void update() {
+        move(this.velocityVector.x, this.velocityVector.y);
     }
+
 
     private Point computeVelocityVector(Point thornDirection) {
 
@@ -65,4 +72,6 @@ public class Thorn extends MovableObject {
 
         return result;
     }
+
+    private Amoeba shooter;
 }

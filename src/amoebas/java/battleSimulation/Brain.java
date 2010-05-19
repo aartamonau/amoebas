@@ -1,8 +1,10 @@
 package amoebas.java.battleSimulation;
 
+
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.Random;
+
+
 
 /**
  * 
@@ -14,45 +16,50 @@ import java.util.Random;
 public class Brain implements IBrain {
 
     public Brain() {
-        randGenerator = new Random();
-        retreivalNum = 0;
-        movementVector = new Point2D.Double(randGenerator.nextDouble(),
-                randGenerator.nextDouble());
+        this.randGenerator = new Random();
+        this.retreivalNum = 0;
+        this.movementVector = new Point2D.Double(this.randGenerator
+                .nextDouble(), this.randGenerator.nextDouble());
     }
 
+
     public void feedSenses(Point2D.Double enemyVector,
-                           Point2D.Double thornVector) {
+            Point2D.Double thornVector) {
         return;
     }
 
-    public Point2D.Double getMovementVector() {
-
-        ++retreivalNum;
-
-        if (retreivalNum == 20) {
-
-            retreivalNum = 0;
-
-            int signX = randGenerator.nextBoolean() ? -1 : 1;
-            int signY = randGenerator.nextBoolean() ? -1 : 1;
-
-            movementVector = new Point2D.Double(randGenerator.nextDouble()
-                    * signX, randGenerator.nextDouble() * signY);
-        }
-
-        return movementVector;
-    }
 
     public Point2D.Double getAimVector() {
-        return new Point2D.Double(randGenerator.nextDouble() * 100,
-                randGenerator.nextDouble() * 100);
+        return new Point2D.Double(this.randGenerator.nextDouble() * 100,
+                this.randGenerator.nextDouble() * 100);
     }
+
+
+    public Point2D.Double getMovementVector() {
+
+        ++this.retreivalNum;
+
+        if (this.retreivalNum == 20) {
+
+            this.retreivalNum = 0;
+
+            int signX = this.randGenerator.nextBoolean() ? -1 : 1;
+            int signY = this.randGenerator.nextBoolean() ? -1 : 1;
+
+            this.movementVector = new Point2D.Double(this.randGenerator
+                    .nextDouble()
+                    * signX, this.randGenerator.nextDouble() * signY);
+        }
+
+        return this.movementVector;
+    }
+
 
     public boolean shallWeShoot() {
-        return randGenerator.nextDouble() < 0.02;
+        return this.randGenerator.nextDouble() < 0.02;
     }
 
-    private Random randGenerator;
     private Point2D.Double movementVector;
+    private Random randGenerator;
     private int retreivalNum;
 }
