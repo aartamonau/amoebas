@@ -12,12 +12,18 @@
 (defn make-point [x y]
   (Point2D$Double. x y))
 
-(def inputs-number 23)
+(def inputs-number 4)
 (def outputs-number 5)
 
 (def movement-outputs [0 1])
 (def aim-outputs      [2 3])
 (def shoot-output     4)
+
+(defn handle-null-input [vector]
+  (if (nil? vector)
+    [-1.0 -1.0]
+    [ (. vector x)
+      (. vector y) ]))
 
 (defn make-brain [genome]
   (let [nn        (atom (genome-to-phenotype genome))
@@ -25,26 +31,12 @@
     (proxy [amoebas.java.battleSimulation.IBrain] []
 
       (feedSenses
-         [self-position enemy-position thorn-position walls]
+         [enemy-vector thorn-vector]
          (do (swap! nn (fn [nn]
                          (update nn
                                  (concat
-                                  [ (. self-position x)
-                                    (. self-position y)
-                                    (. enemy-position x)
-                                    (. enemy-position y) ]
-
-                                  (if (nil? thorn-position)
-                                    [-1.0, -1.0]
-                                    [ (. thorn-position x)
-                                      (. thorn-position y)])
-
-                                  (concat-map #(vector (. % x)
-                                                       (. % y)
-                                                       (. % width)
-                                                       (. % height))
-                                              (seq walls))
-                                  [(random)]))))
+                                   (handle-null-input enemy-vector)
+                                   (handle-null-input thorn-vector)))))
              (reset! reactions (outputs @nn))))
 
       (getMovementVector

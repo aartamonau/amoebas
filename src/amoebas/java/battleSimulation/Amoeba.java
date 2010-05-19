@@ -15,13 +15,13 @@ public class Amoeba extends MovableObject {
     private Random rand = new Random();
     private BattleArea battleArea;
     private boolean isReadyForShooting;
-    
+
     private Point nearestEnemyVector;
     private Point nearestThornVector;
-    
+
     private Thorn thorn;
 
-    
+
     public static final int AMOEBA_MAX_SPEED = 3;
     public static final int AMOEBA_WIDTH = 100;
     public static final int AMOEBA_HEIGHT = 100;
@@ -29,8 +29,8 @@ public class Amoeba extends MovableObject {
     public static final int WEIGHT = 50;
 
     // For debugging only
-    public Point lastAimVector = new Point();    
-    
+    public Point lastAimVector = new Point();
+
 
     public Amoeba(IBrain brain, BattleArea battleArea, Point location) {
 
@@ -48,12 +48,23 @@ public class Amoeba extends MovableObject {
 
     @Override
     public void update() {
-        
+
         updateNearestEnemyAndThornVectors();
 
-        this.brain.feedSenses(this.battleArea.normalizeVector(this
-                .getLocation()), this.battleArea.normalizeVector(this
-                .getLocation()), null, this.battleArea.wallPositions());
+        Point location = this.getLocation();
+
+        Point2D.Double enemyVector =
+          new Point2D.Double(this.nearestEnemyVector.x - location.x,
+                             this.nearestEnemyVector.y - location.y);
+        Point2D.Double thornVector = null;
+        if (this.nearestThornVector != null) {
+          thornVector =
+            new Point2D.Double(this.nearestThornVector.x - location.x,
+                               this.nearestThornVector.y - location.y);
+        }
+
+
+        this.brain.feedSenses(enemyVector, thornVector);
 
         Point2D.Double velocityVectorNorm = this.brain.getMovementVector();
 
@@ -77,7 +88,7 @@ public class Amoeba extends MovableObject {
                         getThornInitialLocation(aimVector));
 
                 battleArea.thornShot(thorn);
-                
+
                 thorn.update();
             }
 
@@ -85,73 +96,73 @@ public class Amoeba extends MovableObject {
 
     }
 
-    
+
     private void updateNearestEnemyAndThornVectors() {
-               
-        Point currAmoebaLocation = this.getLocation();        
-                
-        double nearestEnemyVectorLength = 0;               
+
+        Point currAmoebaLocation = this.getLocation();
+
+        double nearestEnemyVectorLength = 0;
         double nearestThornVectorLength = 0;
-                   
-        
-        List<Amoeba> amoebas = battleArea.getAmoebas();            
+
+
+        List<Amoeba> amoebas = battleArea.getAmoebas();
         Iterator<Amoeba> amoebasIter = amoebas.iterator();
-        
+
         while(amoebasIter.hasNext()) {
-            
+
             Amoeba amoeba = amoebasIter.next();
-            
+
             if ( !amoeba.equals(this) ) {
-                
+
                 Point amoebaLocation = amoeba.getLocation();
                 amoebaLocation.x -= currAmoebaLocation.x;
                 amoebaLocation.y -= currAmoebaLocation.y;
-                                             
+
                 double length = Utils.getRadiusVectorLength(amoebaLocation);
-                
-                
+
+
                 if ( length > nearestEnemyVectorLength ) {
                     nearestEnemyVectorLength = length;
                     nearestEnemyVector = amoebaLocation;
                 }
-                
-                
-                Thorn enemyThorn = amoeba.getActiveThorn();               
-                
+
+
+                Thorn enemyThorn = amoeba.getActiveThorn();
+
                 if (enemyThorn != null ) {
-                    
+
                     Rectangle2D boundaryRect = enemyThorn.getBoundaryRect();
-                    
+
                     Point thornLocation = enemyThorn.getLocation();
-                    
+
                     thornLocation.x -= currAmoebaLocation.x;
                     thornLocation.x += boundaryRect.getWidth()/2;
-                    
+
                     thornLocation.y -= currAmoebaLocation.y;
                     thornLocation.y += boundaryRect.getHeight()/2;
-                    
+
                     length = Utils.getRadiusVectorLength(thornLocation);
-                    
+
                     if ( length > nearestThornVectorLength ) {
-                        
+
                         nearestThornVectorLength = length;
                         nearestThornVector = thornLocation;
                     }
                 } else {
                     nearestThornVector = null;
                 }
-                                
+
             }
         }
-        
-        
-    }
-    
-    
-    
-    
 
-    
+
+    }
+
+
+
+
+
+
     private Point getThornInitialLocation(Point2D.Double aimVector) {
 
         double rectCenterX = boundaryRect.getCenterX();
@@ -234,14 +245,14 @@ public class Amoeba extends MovableObject {
         int dmg = (int) ((int) other.weight * rand.nextDouble() * 0.1);
         hitPoints -= dmg;
     }
-        
-    
-    
+
+
+
     public Thorn getActiveThorn() {
         return thorn;
     }
-    
-    
+
+
 
     public Point getNearestThornVector() {
         return nearestThornVector;
@@ -256,7 +267,7 @@ public class Amoeba extends MovableObject {
     }
 
     public void setReadyForShooting(boolean isReadyForShooting) {
-        this.isReadyForShooting = isReadyForShooting;          
+        this.isReadyForShooting = isReadyForShooting;
         this.thorn = null;
     }
 

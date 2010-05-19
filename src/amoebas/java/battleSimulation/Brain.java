@@ -20,9 +20,8 @@ public class Brain implements IBrain {
                 randGenerator.nextDouble());
     }
 
-    public void feedSenses(Point2D.Double selfPosition,
-            Point2D.Double enemyPosition, Point2D.Double thornPosition,
-            Rectangle2D.Double[] walls) {
+    public void feedSenses(Point2D.Double enemyVector,
+                           Point2D.Double thornVector) {
         return;
     }
 
