@@ -8,7 +8,8 @@ import java.awt.geom.Point2D;
 public interface IBrain {
 
     public void feedSenses(Point2D.Double enemyVector,
-            Point2D.Double thornVector);
+                           Point2D.Double thornVector,
+                           Double intersectionDistance);
 
 
     public Point2D.Double getAimVector();

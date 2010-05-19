@@ -92,18 +92,23 @@ public class Amoeba extends MovableObject {
 
         updateNearestEnemyAndThornVectors();
 
-        Point location = this.getLocation();
+        Point location  = this.getLocation();
+        Point direction = new Point(location.x + this.velocityVector.x,
+                                    location.y + this.velocityVector.y);
 
-        Point2D.Double enemyVector = new Point2D.Double(
-                this.nearestEnemyVector.x - location.x,
-                this.nearestEnemyVector.y - location.y);
+        Double distance = this.intersectionDistance(location, direction);
+
+        Point2D.Double enemyVector =
+          new Point2D.Double(this.nearestEnemyVector.x - location.x,
+                             this.nearestEnemyVector.y - location.y);
         Point2D.Double thornVector = null;
         if (this.nearestThornVector != null) {
-            thornVector = new Point2D.Double(this.nearestThornVector.x
-                    - location.x, this.nearestThornVector.y - location.y);
+            thornVector =
+              new Point2D.Double(this.nearestThornVector.x - location.x,
+                                 this.nearestThornVector.y - location.y);
         }
 
-        this.brain.feedSenses(enemyVector, thornVector);
+        this.brain.feedSenses(enemyVector, thornVector, distance);
 
         Point2D.Double velocityVectorNorm = this.brain.getMovementVector();
 
@@ -257,6 +262,99 @@ public class Amoeba extends MovableObject {
             }
         }
 
+    }
+
+    private Double intersectionDistanceLines(Point p1, Point p2,
+                                             Point p3, Point p4) {
+        // first two points specify a view direction
+        // second two point specify a wall edge
+
+        int denominator =
+          (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
+
+        if (denominator == 0) {
+            // lines are parallel
+            return null;
+        }
+
+        int nominator =
+          (p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x);
+
+        double ub = ((double) nominator) / denominator;
+
+        // intersection point coordinates
+        double x = p3.x + ub * (p4.x - p3.x);
+        double y = p3.y + ub * (p4.y - p3.y);
+
+        double dx = x - p1.x;
+        double dy = y - p1.y;
+
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (ub >= 0 && ub <= 1 && distance >= 0) {
+            return distance;
+        } else {
+            return null;
+        }
+    }
+
+    private Double intersectionDistanceRect(Point p1, Point p2,
+                                            Rectangle2D rect) {
+        Double[] ds = new Double[4];
+
+        int rx = (int) rect.getX();
+        int ry = (int) rect.getY();
+        int rw = (int) rect.getWidth();
+        int rh = (int) rect.getHeight();
+
+        ds[0] = this.intersectionDistanceLines(p1, p2,
+                                               new Point(rx, ry),
+                                               new Point(rx, ry + rh));
+        ds[1] = this.intersectionDistanceLines(p1, p2,
+                                               new Point(rx + rw, ry),
+                                               new Point(rx + rw, ry + rh));
+        ds[2] = this.intersectionDistanceLines(p1, p2,
+                                               new Point(rx, ry),
+                                               new Point(rx + rw, ry));
+        ds[3] = this.intersectionDistanceLines(p1, p2,
+                                               new Point(rx, ry + rh),
+                                               new Point(rx + rw, ry + rh));
+
+
+        Double distance = null;
+        for (int i = 0; i < ds.length; i++) {
+            if (ds[i] != null) {
+                if (distance == null) {
+                    distance = ds[i];
+                } else {
+                    distance = Math.min(distance, ds[i]);
+                }
+            }
+        }
+
+        return distance;
+    }
+
+    private Double intersectionDistance(Point p1, Point p2) {
+        List<MapObject> walls = this.battleArea.getStaticObjects();
+
+        Iterator iter = walls.iterator();
+        Double distance = null;
+
+        for (MapObject object : walls) {
+            Rectangle2D rect = object.getBoundaryRect();
+
+            Double rectDistance = this.intersectionDistanceRect(p1, p2, rect);
+            if (rectDistance != null) {
+                if (distance == null) {
+                    distance = rectDistance;
+                } else {
+                    distance = Math.min(distance, rectDistance);
+                }
+            }
+        }
+
+        return distance;
     }
 
     // For debugging only

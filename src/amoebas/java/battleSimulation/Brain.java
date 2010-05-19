@@ -24,7 +24,8 @@ public class Brain implements IBrain {
 
 
     public void feedSenses(Point2D.Double enemyVector,
-            Point2D.Double thornVector) {
+                           Point2D.Double thornVector,
+                           Double intersectionDistance) {
         return;
     }
 

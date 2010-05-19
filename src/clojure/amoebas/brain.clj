@@ -14,7 +14,7 @@
         ny (* 2 (- y 0.5))]
     (Point2D$Double. nx ny)))
 
-(def inputs-number 7)
+(def inputs-number 8)
 (def outputs-number 5)
 
 (def movement-outputs [0 1])
@@ -35,7 +35,7 @@
     (proxy [amoebas.java.battleSimulation.IBrain] []
 
       (feedSenses
-         [enemy-vector thorn-vector]
+         [enemy-vector thorn-vector intersection-distance]
          (do (swap! nn (fn [nn]
                          (update nn
                                  (concat
@@ -44,8 +44,11 @@
 
                                    (if (nil? thorn-vector)
                                      [-1.0 -1.0 -1.0]
-                                     (normalize-vector thorn-vector))))))
+                                     (normalize-vector thorn-vector))
 
+                                   (if (nil? intersection-distance)
+                                     [-1.0]
+                                     [intersection-distance])))))
              (reset! reactions (outputs @nn))))
 
       (getMovementVector
