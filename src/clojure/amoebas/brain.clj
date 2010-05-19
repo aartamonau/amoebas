@@ -14,7 +14,7 @@
         ny (* 2 (- y 0.5))]
     (Point2D$Double. nx ny)))
 
-(def inputs-number 6)
+(def inputs-number 7)
 (def outputs-number 5)
 
 (def movement-outputs [0 1])
@@ -39,6 +39,7 @@
          (do (swap! nn (fn [nn]
                          (update nn
                                  (concat
+                                   [(random -1.0 1.0)]
                                    (normalize-vector enemy-vector)
 
                                    (if (nil? thorn-vector)
