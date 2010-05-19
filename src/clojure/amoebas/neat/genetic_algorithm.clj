@@ -144,5 +144,5 @@
       :generation (inc (:generation ga))
       :population (concat elite children)
       :next-genome-id next-genome-id
-      :leader         (first sorted)
+      :leader         (vec (first sorted))
       :prev-generation-leader (:leader ga))))

@@ -30,12 +30,11 @@
 (def save-file (file-str "~/amoebas_save"))
 
 (defn simulate [a b]
-  (let [result (doto
-                   (new Simulator (make-brain a)
-                        (make-brain b))
-                   (.simulate))]
+  (let [result (. (Simulator. (make-brain a)
+                              (make-brain b))
+                   simulate)]
     (cond
-     (= result Simulator$SimulationResult/FIRST) 'a
+     (= result Simulator$SimulationResult/FIRST)  'a
      (= result Simulator$SimulationResult/SECOND) 'b
      :else 'draw)))
 
@@ -58,6 +57,7 @@
         ga         (agent (init-ga))]
     (loop []
       (do (. info showGenerationNum (:generation @ga))
+          (. info showBestAmoeba    (str (second (:leader @ga))))
           (save-ga @ga)
 
           (let [population (:population @ga)]
