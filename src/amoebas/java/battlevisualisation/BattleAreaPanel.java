@@ -3,6 +3,7 @@
  */
 package amoebas.java.battlevisualisation;
 
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -17,6 +18,8 @@ import javax.swing.border.EtchedBorder;
 import amoebas.java.battleSimulation.BattleArea;
 import amoebas.java.battleSimulation.Thorn;
 import amoebas.java.battleSimulation.ThornShotListener;
+
+
 
 /**
  * This panel represents the battlefield. All the objects that are to be
@@ -38,16 +41,25 @@ public class BattleAreaPanel extends JPanel implements ThornShotListener {
         setFocusable(true);
 
         this.battleArea = battleArea;
-        objects = new LinkedList<GraphicalObject>();
+        this.objects = new LinkedList<GraphicalObject>();
     }
+
 
     public synchronized void addGraphicalObject(GraphicalObject object) {
-        objects.add(object);
+        this.objects.add(object);
     }
 
+
     public synchronized void removeGraphicalObject(GraphicalObject object) {
-        objects.remove(object);
+        this.objects.remove(object);
     }
+
+
+    @Override
+    public synchronized void thornShot(Thorn thorn) {
+        this.addGraphicalObject(new ThornView(thorn));
+    }
+
 
     @Override
     protected synchronized void paintComponent(Graphics graphicsContext) {
@@ -57,12 +69,13 @@ public class BattleAreaPanel extends JPanel implements ThornShotListener {
         Graphics2D g2d = (Graphics2D) graphicsContext;
 
         Dimension panelSize = getSize();
-        Dimension battleAreaSize = battleArea.getSize();
+        Dimension battleAreaSize = this.battleArea.getSize();
 
         double xScale = 1.0 * panelSize.width / battleAreaSize.width;
         double yScale = 1.0 * panelSize.height / battleAreaSize.height;
 
-        Iterator<GraphicalObject> graphicalObjectsIter = objects.iterator();
+        Iterator<GraphicalObject> graphicalObjectsIter = this.objects
+                .iterator();
 
         while (graphicalObjectsIter.hasNext()) {
             GraphicalObject object = graphicalObjectsIter.next();
@@ -74,11 +87,6 @@ public class BattleAreaPanel extends JPanel implements ThornShotListener {
             }
         }
 
-    }
-
-    @Override
-    public synchronized void thornShot(Thorn thorn) {
-        this.addGraphicalObject(new ThornView(thorn));
     }
 
     private BattleArea battleArea;

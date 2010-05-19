@@ -3,6 +3,7 @@
  */
 package amoebas.java.battlevisualisation;
 
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -12,7 +13,8 @@ import java.awt.geom.Rectangle2D;
 import java.net.URL;
 
 import amoebas.java.battleSimulation.Amoeba;
-import amoebas.java.battleSimulation.Thorn;
+
+
 
 /**
  * @author m
@@ -25,28 +27,26 @@ public class AmoebaView extends GraphicalObject {
         this.amoebaModel = amoeba;
 
         URL imgURL = getClass().getResource("amoeba.jpg");
-        img = Toolkit.getDefaultToolkit().getImage(imgURL);
+        this.img = Toolkit.getDefaultToolkit().getImage(imgURL);
     }
 
-    @Override
-    public boolean isValid() {
-        return amoebaModel.isAlive();
-    }
 
     @Override
     public void draw(Graphics2D graphicsContext, double xScale, double yScale) {
 
-        Point loc = amoebaModel.getLocation();
+        Point loc = this.amoebaModel.getLocation();
 
-        graphicsContext.drawImage(img, (int) (loc.x * xScale),
+        graphicsContext.drawImage(this.img, (int) (loc.x * xScale),
                 (int) (loc.y * yScale), (int) (Amoeba.AMOEBA_WIDTH * xScale),
                 (int) (Amoeba.AMOEBA_HEIGHT * yScale), null);
 
         // Displaying the direction
-        Point velocityVector = amoebaModel.getVelocityVector();
+        Point velocityVector = this.amoebaModel.getVelocityVector();
 
-        int squareCenterX = (int) amoebaModel.getBoundaryRect().getCenterX();
-        int squareCenterY = (int) amoebaModel.getBoundaryRect().getCenterY();
+        int squareCenterX = (int) this.amoebaModel.getBoundaryRect()
+                .getCenterX();
+        int squareCenterY = (int) this.amoebaModel.getBoundaryRect()
+                .getCenterY();
 
         int endX = squareCenterX + velocityVector.x * 50;
         int endY = squareCenterY + velocityVector.y * 50;
@@ -58,7 +58,7 @@ public class AmoebaView extends GraphicalObject {
                 (int) (endY * yScale));
 
         // Displaying the aim vector
-        Point aimVector = amoebaModel.lastAimVector;
+        Point aimVector = this.amoebaModel.lastAimVector;
 
         graphicsContext.setColor(Color.green);
 
@@ -66,9 +66,9 @@ public class AmoebaView extends GraphicalObject {
                 (int) (squareCenterY * yScale),
                 (int) ((aimVector.x * 3 + squareCenterX) * xScale),
                 (int) ((aimVector.y * 3 + squareCenterY) * yScale));
-        
+
         // Displaying the nearest enemy vector
-        Point nearestEnemyVector = amoebaModel.getNearestEnemyVector();
+        Point nearestEnemyVector = this.amoebaModel.getNearestEnemyVector();
 
         graphicsContext.setColor(Color.CYAN);
 
@@ -76,28 +76,28 @@ public class AmoebaView extends GraphicalObject {
                 (int) (squareCenterY * yScale),
                 (int) ((nearestEnemyVector.x + squareCenterX) * xScale),
                 (int) ((nearestEnemyVector.y + squareCenterY) * yScale));
-        
+
         // Displaying the nearest enemy's thorn vector
-        Point nearsetThornVector = amoebaModel.getNearestThornVector();
-        
-        if ( nearsetThornVector != null ) {
-                                  
+        Point nearsetThornVector = this.amoebaModel.getNearestThornVector();
+
+        if (nearsetThornVector != null) {
+
             graphicsContext.setColor(Color.black);
-    
+
             graphicsContext.drawLine((int) (loc.x * xScale),
                     (int) (loc.y * yScale),
                     (int) ((nearsetThornVector.x + loc.x) * xScale),
                     (int) ((nearsetThornVector.y + loc.y) * yScale));
-        
+
         }
 
         // Displaying a HP Bar
         graphicsContext.setColor(Color.GRAY);
 
-        Rectangle2D rect = amoebaModel.getBoundaryRect();
+        Rectangle2D rect = this.amoebaModel.getBoundaryRect();
 
-        int squareX = amoebaModel.getLocation().x;
-        int squareY = amoebaModel.getLocation().y;
+        int squareX = this.amoebaModel.getLocation().x;
+        int squareY = this.amoebaModel.getLocation().y;
 
         int height = (int) Math.round(0.1 * rect.getHeight());
         int width = (int) rect.getWidth();
@@ -108,7 +108,7 @@ public class AmoebaView extends GraphicalObject {
 
         graphicsContext.setColor(Color.RED);
 
-        width *= 1.0 * amoebaModel.getHitPoints() / Amoeba.MAX_HP;
+        width *= 1.0 * this.amoebaModel.getHitPoints() / Amoeba.MAX_HP;
 
         graphicsContext.fillRect((int) (squareX * xScale),
                 (int) (squareY * yScale), (int) (width * xScale),
@@ -116,6 +116,12 @@ public class AmoebaView extends GraphicalObject {
 
     }
 
-    private Image img;
+
+    @Override
+    public boolean isValid() {
+        return this.amoebaModel.isAlive();
+    }
+
     private Amoeba amoebaModel;
+    private Image img;
 }

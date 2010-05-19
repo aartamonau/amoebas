@@ -1,10 +1,13 @@
 package amoebas.java.battlevisualisation;
 
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
 import amoebas.java.battleSimulation.Wall;
+
+
 
 public class WallView extends GraphicalObject {
 
@@ -13,12 +16,13 @@ public class WallView extends GraphicalObject {
         this.wall = wall;
     }
 
+
     @Override
     public void draw(Graphics2D graphicsContext, double xScale, double yScale) {
 
         graphicsContext.setColor(Color.BLUE);
 
-        Rectangle2D rect = (Rectangle2D) wall.getBoundaryRect().clone();
+        Rectangle2D rect = (Rectangle2D) this.wall.getBoundaryRect().clone();
 
         rect.setRect(rect.getX() * xScale, rect.getY() * yScale, rect
                 .getWidth()
@@ -27,9 +31,10 @@ public class WallView extends GraphicalObject {
         graphicsContext.fill(rect);
     }
 
+
     @Override
     public boolean isValid() {
-        return wall.isAlive();
+        return this.wall.isAlive();
     }
 
     protected Wall wall;
