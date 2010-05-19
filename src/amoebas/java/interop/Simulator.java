@@ -51,7 +51,7 @@ public class Simulator {
             return SimulationResult.DRAW;
         }
 
-        System.out.println("simulation is over");
+        // System.out.println("simulation is over");
         if (this.aAmoeba.equals(this.battle.getWinner())) {
             return SimulationResult.FIRST;
         } else {

@@ -39,11 +39,6 @@ public class BattleSimulation {
     }
 
     public boolean isOverTimed() {
-
-        if (this.tick > TICK_LIMIT) {
-            System.out.println("overtimed");
-        }
-
         return this.tick > TICK_LIMIT;
     }
 
