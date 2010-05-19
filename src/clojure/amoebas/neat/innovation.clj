@@ -53,7 +53,7 @@
 
 (defn make-link-innovation
   ([id link]
-     (make-link-innovation id (:neuron-in link) (:neuron-out link)))
+     (make-link-innovation id (:from link) (:to link)))
   ([id in out]
      (new link-innovation
           id
@@ -92,7 +92,7 @@
             (make-link-innovation (+ i neurons-count) link))]
     (new innovation-db
          (vec (concat neuron-innovations
-                                link-innovations))
+                      link-innovations))
          neurons-count
          (+ neurons-count links-count))))
 
