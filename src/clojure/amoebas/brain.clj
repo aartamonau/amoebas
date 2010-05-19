@@ -10,20 +10,24 @@
         (drop start xs)))
 
 (defn make-point [x y]
-  (Point2D$Double. x y))
+  (let [nx (* 2 (- x 0.5))
+        ny (* 2 (- y 0.5))]
+    (Point2D$Double. nx ny)))
 
-(def inputs-number 4)
+(def inputs-number 6)
 (def outputs-number 5)
 
 (def movement-outputs [0 1])
 (def aim-outputs      [2 3])
 (def shoot-output     4)
 
-(defn handle-null-input [vector]
-  (if (nil? vector)
-    [-1.0 -1.0]
-    [ (. vector x)
-      (. vector y) ]))
+(defn normalize-vector [vector]
+  (let [norm (. Math sqrt (+ (* (. vector x) (. vector x))
+                             (* (. vector y) (. vector y))))]
+    (if (not (zero? norm))
+      [ (/ (. vector x) norm) (/ (. vector y) norm)
+        norm ]
+      [ (. vector x) (. vector y) 0.0 ])))
 
 (defn make-brain [genome]
   (let [nn        (atom (genome-to-phenotype genome))
@@ -35,8 +39,12 @@
          (do (swap! nn (fn [nn]
                          (update nn
                                  (concat
-                                   (handle-null-input enemy-vector)
-                                   (handle-null-input thorn-vector)))))
+                                   (normalize-vector enemy-vector)
+
+                                   (if (nil? thorn-vector)
+                                     [-1.0 -1.0 -1.0]
+                                     (normalize-vector thorn-vector))))))
+
              (reset! reactions (outputs @nn))))
 
       (getMovementVector
@@ -52,6 +60,6 @@
       (shallWeShoot
          []
          (let [reaction (nth @reactions shoot-output)]
-           (if (> reaction 0)
+           (if (> reaction 0.5)
              true
              false))))))

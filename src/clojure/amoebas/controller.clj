@@ -26,7 +26,7 @@
     [ first
       second ]))
 
-(def population-size 30)
+(def population-size 50)
 (def save-file (file-str "~/amoebas_save"))
 
 (defn simulate [a b]
