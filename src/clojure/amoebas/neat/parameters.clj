@@ -1,6 +1,6 @@
 (ns amoebas.neat.parameters)
 
-(def tours-per-generation 1)
+(def tours-per-generation 2)
 (def elite-ratio 0.05)
 
 (def winner-score 3)
