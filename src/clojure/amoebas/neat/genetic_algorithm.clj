@@ -67,14 +67,14 @@
             (recur (next xs) point selected)))
         selected))))
 
-(defn simulate-random [ga a b]
+(defn simulate-random [a b]
   (random-out-of 'a 'draw 'b))
 
 (defn genome-comparator [[genome-1 fitness-1]
                          [genome-2 fitness-2]]
   (- (compare fitness-1 fitness-2)))
 
-(defn tour [ga simulate a b]
+(defn tour [simulate a b]
   (let [result (simulate a b)]
     (cond
      (= result 'a) (hash-map a params/winner-score
@@ -93,10 +93,10 @@
              (concat result
                      (map #(vector x %) rest))))))
 
-(defn tournament [ga simulate times population]
+(defn tournament [simulate times population]
   (let [games   (pairs population)]
     (apply merge-with +
-           (pmap #(apply tour ga simulate %)
+           (pmap #(apply tour simulate %)
                  (reduce concat
                          (replicate times games))))))
 
@@ -114,7 +114,7 @@
                                   params/max-activation-perturbation)))
 
 (defn next-generation [ga simulate]
-  (let [results (tournament ga simulate
+  (let [results (tournament simulate
                             params/tours-per-generation
                             (:population ga))
         sorted  (sort-by second
@@ -144,5 +144,5 @@
       :generation (inc (:generation ga))
       :population (concat elite children)
       :next-genome-id next-genome-id
-      :leader         (first (first sorted))
+      :leader         (first sorted)
       :prev-generation-leader (:leader ga))))
